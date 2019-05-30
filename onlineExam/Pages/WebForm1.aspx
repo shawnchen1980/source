@@ -7,6 +7,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <title></title>
 </head>
+<asp:label runat="server" id="lblIpAddress" text="Label"></asp:label>
 <body>
     <form id="form1" runat="server" enctype="multipart/form-data">
         <div>
@@ -17,6 +18,7 @@
                     <asp:MenuItem Text="试题导入" Value="1"></asp:MenuItem>
                     <asp:MenuItem Text="创建试卷模板" Value="2"></asp:MenuItem>
                     <asp:MenuItem Text="阅卷评分" Value="3"></asp:MenuItem>
+                    <asp:MenuItem Text="学生列表" Value="4"></asp:MenuItem>
                 </Items>
             </asp:Menu>
 
@@ -158,6 +160,39 @@
                 </EditItemTemplate>
                 
             </asp:FormView>
+                </asp:View>
+                <asp:View ID="View4" runat="server">
+                    <div class="custom-file">
+    <input type="file" class="custom-file-input" id="myFileStu" name="myFileStu" lang="cn">
+    
+  </div>
+              <div class="input-group-append">
+   
+      <asp:LinkButton ID="LinkButton1Stu" CssClass="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm" runat="server" OnClick="LinkButton1Stu_Click" ><i class="fas fa-upload fa-sm text-white-50"></i>学生名单上传</asp:LinkButton>
+
+  </div>
+            <asp:ObjectDataSource ID="ObjectDataSource3" runat="server" SelectMethod="GetStudents" TypeName="onlineExam.DAL.StudentRepository" UpdateMethod="UpdateStudent"  ConflictDetection="CompareAllValues" DataObjectTypeName="onlineExam.Models.Student" OldValuesParameterFormatString="orig{0}">
+                <UpdateParameters>
+                    <asp:Parameter Name="yqsbb" Type="Object" />
+                    <asp:Parameter Name="origYqsbb" Type="Object" />
+                </UpdateParameters>
+            </asp:ObjectDataSource>
+                    <asp:GridView ID="GridView1" runat="server" AllowPaging="True" AutoGenerateColumns="False" DataSourceID="ObjectDataSource3">
+                        <Columns>
+                            <asp:CommandField ShowEditButton="True" />
+                            <asp:BoundField DataField="StudentId" HeaderText="StudentId" SortExpression="StudentId" />
+                            <asp:BoundField DataField="xhId" HeaderText="xhId" SortExpression="xhId" />
+                            <asp:BoundField DataField="name" HeaderText="name" SortExpression="name" />
+                            <asp:BoundField DataField="classId" HeaderText="classId" SortExpression="classId" />
+                        </Columns>
+                    </asp:GridView>
+                    <br />
+                </asp:View>
+                <asp:View ID="View5" runat="server">
+                    <asp:ObjectDataSource ID="ObjectDataSource4" runat="server" SelectMethod="GetSheetSchemas" TypeName="onlineExam.DAL.SheetSchemaRepository"></asp:ObjectDataSource>
+                    <asp:DropDownList ID="DropDownList1" runat="server" DataSourceID="ObjectDataSource4" DataTextField="name" DataValueField="SheetSchemaId" style="margin-bottom: 0px">
+                    </asp:DropDownList>
+                    <asp:Button ID="Button5" runat="server" Text="刷新" />
                 </asp:View>
             </asp:MultiView>
 

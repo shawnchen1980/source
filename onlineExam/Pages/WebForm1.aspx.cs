@@ -15,6 +15,8 @@ namespace onlineExam.Pages
     {
         protected void Page_Load(object sender, EventArgs e)
         {
+            string add = GetIPAddress();
+            lblIpAddress.Text = add;
 
         }
 
@@ -27,7 +29,22 @@ namespace onlineExam.Pages
         {
 
         }
+        protected string GetIPAddress()
+        {
+            System.Web.HttpContext context = System.Web.HttpContext.Current;
+            string ipAddress = context.Request.ServerVariables["HTTP_X_FORWARDED_FOR"];
 
+            if (!string.IsNullOrEmpty(ipAddress))
+            {
+                string[] addresses = ipAddress.Split(',');
+                if (addresses.Length != 0)
+                {
+                    return addresses[0];
+                }
+            }
+
+            return context.Request.ServerVariables["REMOTE_ADDR"];
+        }
         protected void FormView1_DataBound(object sender, EventArgs e)
         {
             Console.Write(FormView1.DataItem);
@@ -341,6 +358,22 @@ namespace onlineExam.Pages
             
             MultiView1.ActiveViewIndex = Convert.ToInt32(e.Item.Value)-1;
             
+        }
+
+        protected void LinkButton1Stu_Click(object sender, EventArgs e)
+        {
+            HttpPostedFile file = Request.Files["myFileStu"];
+
+            using (StudentBLL bl = new StudentBLL())
+            {
+                var items = bl.ImportStudent(file);
+                foreach (var item in items)
+                {
+                    bl.SaveOrUpdate(item);
+                }
+
+            }
+            GridView1.DataBind();
         }
     }
 
