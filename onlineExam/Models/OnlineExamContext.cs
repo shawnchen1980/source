@@ -18,6 +18,7 @@ namespace onlineExam.Models
         public DbSet<SheetQ> SheetQs { get; set; }
         public DbSet<Student> Students { get; set; }
         public DbSet<Assignment> Assignments { get; set; }
+        public DbSet<Exam> Exams { get; set; }
 
     }
 }

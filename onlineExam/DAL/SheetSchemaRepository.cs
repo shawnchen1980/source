@@ -46,7 +46,7 @@ namespace onlineExam.DAL
 
         public IEnumerable<SheetSchema> GetSheetSchemas()
         {
-            return context.SheetSchemas.ToList();
+            return context.SheetSchemas.Include("SheetSchemaQs.QTemplate").ToList();
         }
         public void InsertSheetSchema(SheetSchema yqsbb)
         {

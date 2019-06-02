@@ -5,35 +5,37 @@ using System.Web;
 using System.Data.Entity;
 using System.Data.Entity.Core.Objects;
 using System.Data.Entity.Infrastructure;
+using OfficeOpenXml;
+
 using onlineExam.Models;
 namespace onlineExam.DAL
 {
-    public interface ISheetSchemaQRepository : IDisposable
+    public interface IExamRepository : IDisposable
     {
-        IEnumerable<SheetSchemaQ> GetSheetSchemaQs();
-        void InsertSheetSchemaQ(SheetSchemaQ item);
-        void DeleteSheetSchemaQ(SheetSchemaQ item);
-        void UpdateSheetSchemaQ(SheetSchemaQ item, SheetSchemaQ origItem);
-        void SaveOrUpdate(SheetSchemaQ item);
+        IEnumerable<Exam> GetExams();
+        void InsertExam(Exam qt);
+        void DeleteExam(Exam qt);
+        void UpdateExam(Exam qt, Exam origqt);
+        void SaveOrUpdate(Exam qt);
     }
-    public class SheetSchemaQRepository : IDisposable, ISheetSchemaQRepository
+    public class ExamRepository : IDisposable, IExamRepository
     {
         private OnlineExamContext context = new OnlineExamContext();
         public void SaveOrUpdate
-    (SheetSchemaQ entity)
+    (Exam entity)
 
         {
             try
             {
 
-                SheetSchemaQ origYqsbb = context.SheetSchemaQs.FirstOrDefault(x => x.SheetSchemaQId == entity.SheetSchemaQId);
+                Exam origYqsbb = context.Exams.FirstOrDefault(x => x.ExamId == entity.ExamId);
                 if (origYqsbb == null)
                 {
-                    InsertSheetSchemaQ(entity);
+                    InsertExam(entity);
                 }
                 else
                 {
-                    UpdateSheetSchemaQ(entity, origYqsbb);
+                    UpdateExam(entity, origYqsbb);
                 }
 
             }
@@ -44,16 +46,16 @@ namespace onlineExam.DAL
             }
         }
 
-        public IEnumerable<SheetSchemaQ> GetSheetSchemaQs()
+        public IEnumerable<Exam> GetExams()
         {
-            return context.SheetSchemaQs.Include("QTemplate").ToList();
+            return context.Exams.ToList();
         }
-        public void InsertSheetSchemaQ(SheetSchemaQ yqsbb)
+        public void InsertExam(Exam yqsbb)
         {
             try
             {
 
-                context.SheetSchemaQs.Add(yqsbb);
+                context.Exams.Add(yqsbb);
                 context.SaveChanges();
             }
             catch (Exception ex)
@@ -65,12 +67,12 @@ namespace onlineExam.DAL
             }
         }
 
-        public void DeleteSheetSchemaQ(SheetSchemaQ yqsbb)
+        public void DeleteExam(Exam yqsbb)
         {
             try
             {
-                context.SheetSchemaQs.Attach(yqsbb);
-                context.SheetSchemaQs.Remove(yqsbb);
+                context.Exams.Attach(yqsbb);
+                context.Exams.Remove(yqsbb);
                 context.SaveChanges();
             }
             catch (Exception ex)
@@ -81,14 +83,14 @@ namespace onlineExam.DAL
                 throw ex;
             }
         }
-        public void UpdateSheetSchemaQ(SheetSchemaQ yqsbb, SheetSchemaQ origYqsbb)
+        public void UpdateExam(Exam yqsbb, Exam origYqsbb)
         {
             try
             {
 
-                context.SheetSchemaQs.Attach(origYqsbb);
+                context.Exams.Attach(origYqsbb);
                 //context.ApplyCurrentValues("Departments", department);
-                ((IObjectContextAdapter)context).ObjectContext.ApplyCurrentValues("SheetSchemaQs", yqsbb);
+                ((IObjectContextAdapter)context).ObjectContext.ApplyCurrentValues("Exams", yqsbb);
                 context.SaveChanges();
             }
             catch (Exception ex)

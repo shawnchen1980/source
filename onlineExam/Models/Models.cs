@@ -72,6 +72,7 @@ namespace onlineExam.Models
         public QTemplate QTemplate { get; set; }//题目
         //public int QTemplateId { get; set; }//题目
         public SheetSchema SheetSchema { get; set; }
+        public int score { get; set; }
     }
     public class SheetSchema
     {
@@ -89,14 +90,17 @@ namespace onlineExam.Models
         public string answer { get; set; }
         public string answer2 { get; set; }
         public string answer3 { get; set; }
+        public int score { get; set; }
         public Sheet Sheet { get; set; }
     }
     public class Sheet
     {
+        [ForeignKey("Assignment")]
         public int SheetId { get; set; }
         public DateTime timestamp { get; set; }
         public ICollection<SheetQ> SheetQs { get; set; }
-        public Student Student { get; set; }
+        public Assignment Assignment { get; set; }
+       
     }
     public class Student
     {
@@ -117,7 +121,20 @@ namespace onlineExam.Models
         public bool sheetSubmited { get; set; }
         public DateTime? firstLogin { get; set; }
         public DateTime? lastLogin { get; set; }
+        public Exam Exam { get; set; }
+        public SheetSchema SheetSchema {get;set;}
+        public Assignment ShallowCopy()
+        {
+            return (Assignment)this.MemberwiseClone();
+        }
 
+    }
+    public class Exam
+    {
+        public int ExamId { get; set; }
+        public string name { get; set; }
+        public bool open { get; set; }
+        
     }
 
 }

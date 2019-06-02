@@ -18,7 +18,8 @@
                     <asp:MenuItem Text="试题导入" Value="1"></asp:MenuItem>
                     <asp:MenuItem Text="创建试卷模板" Value="2"></asp:MenuItem>
                     <asp:MenuItem Text="阅卷评分" Value="3"></asp:MenuItem>
-                    <asp:MenuItem Text="学生列表" Value="4"></asp:MenuItem>
+                    <asp:MenuItem Text="创建考试名单" Value="4"></asp:MenuItem>
+                    <asp:MenuItem Text="分配任务" Value="5"></asp:MenuItem>
                 </Items>
             </asp:Menu>
 
@@ -26,6 +27,10 @@
                 <asp:View ID="View1" runat="server">
                     <div class="custom-file">
     <input type="file" class="custom-file-input" id="myFile" name="myFile" lang="cn">
+    
+                        <asp:TextBox ID="TextBox34" placeholder="输入试卷模板名称，例如：科目一第一套试卷" runat="server"></asp:TextBox>
+    
+                        <asp:RequiredFieldValidator ID="RequiredFieldValidator1" runat="server" ControlToValidate="TextBox34" ErrorMessage="*" ForeColor="Red"></asp:RequiredFieldValidator>
     
   </div>
               <div class="input-group-append">
@@ -186,17 +191,36 @@
                             <asp:BoundField DataField="classId" HeaderText="classId" SortExpression="classId" />
                         </Columns>
                     </asp:GridView>
+                    <asp:TextBox ID="TextBox33" placeholder="请输入考试名称" runat="server"></asp:TextBox>
+                    <asp:Button ID="Button6" runat="server" Text="生成考试名单" OnClick="Button6_Click" />
                     <br />
+                    <asp:Label ID="Label13" runat="server"></asp:Label>
                 </asp:View>
                 <asp:View ID="View5" runat="server">
-                    <asp:ObjectDataSource ID="ObjectDataSource4" runat="server" SelectMethod="GetSheetSchemas" TypeName="onlineExam.DAL.SheetSchemaRepository"></asp:ObjectDataSource>
-                    <asp:DropDownList ID="DropDownList1" runat="server" DataSourceID="ObjectDataSource4" DataTextField="name" DataValueField="SheetSchemaId" style="margin-bottom: 0px">
+                    <asp:ObjectDataSource ID="ObjectDataSource4" runat="server" SelectMethod="GetExams" TypeName="onlineExam.DAL.ExamRepository"></asp:ObjectDataSource>
+                    <asp:ObjectDataSource ID="ObjectDataSource5" runat="server" SelectMethod="GetSheetSchemas" TypeName="onlineExam.DAL.SheetSchemaRepository"></asp:ObjectDataSource>
+                    <asp:DropDownList ID="DropDownList1" runat="server" DataSourceID="ObjectDataSource4" DataTextField="name" DataValueField="ExamId" Height="16px">
                     </asp:DropDownList>
-                    <asp:Button ID="Button5" runat="server" Text="刷新" />
+                    <asp:Button ID="Button5" runat="server" OnClick="Button5_Click" Text="刷新" />
+                    <asp:Label ID="Label14" runat="server" Text="选择考试名称和试卷方案后组卷"></asp:Label>
+                    <asp:GridView ID="GridView3" runat="server" AutoGenerateColumns="False" DataKeyNames="SheetSchemaId" DataSourceID="ObjectDataSource5" OnPageIndexChanging="PaginateTheData" OnRowDataBound="ReSelectSelectedRecords">
+                        <Columns>
+                            <asp:TemplateField HeaderText="Select">
+                                <ItemTemplate>
+                                    <asp:CheckBox ID="chkSelect" runat="server" />
+                                </ItemTemplate>
+                            </asp:TemplateField>
+                            <asp:BoundField DataField="SheetSchemaId" HeaderText="SheetSchemaId" SortExpression="SheetSchemaId" />
+                            <asp:BoundField DataField="name" HeaderText="name" SortExpression="name" />
+                        </Columns>
+                    </asp:GridView>
+                    <asp:Button ID="Button7" runat="server" OnClick="Button7_Click" Text="组卷并分配试卷" />
+                    <asp:Label ID="Label15" runat="server"></asp:Label>
                 </asp:View>
             </asp:MultiView>
 
         </div>
+        
     </form>
 </body>
 </html>

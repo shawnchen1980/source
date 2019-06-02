@@ -5,35 +5,37 @@ using System.Web;
 using System.Data.Entity;
 using System.Data.Entity.Core.Objects;
 using System.Data.Entity.Infrastructure;
+using OfficeOpenXml;
+
 using onlineExam.Models;
 namespace onlineExam.DAL
 {
-    public interface ISheetSchemaQRepository : IDisposable
+    public interface IAssignmentRepository : IDisposable
     {
-        IEnumerable<SheetSchemaQ> GetSheetSchemaQs();
-        void InsertSheetSchemaQ(SheetSchemaQ item);
-        void DeleteSheetSchemaQ(SheetSchemaQ item);
-        void UpdateSheetSchemaQ(SheetSchemaQ item, SheetSchemaQ origItem);
-        void SaveOrUpdate(SheetSchemaQ item);
+        IEnumerable<Assignment> GetAssignments();
+        void InsertAssignment(Assignment qt);
+        void DeleteAssignment(Assignment qt);
+        void UpdateAssignment(Assignment qt, Assignment origqt);
+        void SaveOrUpdate(Assignment qt);
     }
-    public class SheetSchemaQRepository : IDisposable, ISheetSchemaQRepository
+    public class AssignmentRepository : IDisposable, IAssignmentRepository
     {
         private OnlineExamContext context = new OnlineExamContext();
         public void SaveOrUpdate
-    (SheetSchemaQ entity)
+    (Assignment entity)
 
         {
             try
             {
 
-                SheetSchemaQ origYqsbb = context.SheetSchemaQs.FirstOrDefault(x => x.SheetSchemaQId == entity.SheetSchemaQId);
+                Assignment origYqsbb = context.Assignments.FirstOrDefault(x => x.AssignmentId == entity.AssignmentId);
                 if (origYqsbb == null)
                 {
-                    InsertSheetSchemaQ(entity);
+                    InsertAssignment(entity);
                 }
                 else
                 {
-                    UpdateSheetSchemaQ(entity, origYqsbb);
+                    UpdateAssignment(entity, origYqsbb);
                 }
 
             }
@@ -43,17 +45,17 @@ namespace onlineExam.DAL
                 throw ex;
             }
         }
-
-        public IEnumerable<SheetSchemaQ> GetSheetSchemaQs()
+        
+        public IEnumerable<Assignment> GetAssignments()
         {
-            return context.SheetSchemaQs.Include("QTemplate").ToList();
+            return context.Assignments.Include("Student").Include("Exam").ToList();
         }
-        public void InsertSheetSchemaQ(SheetSchemaQ yqsbb)
+        public void InsertAssignment(Assignment yqsbb)
         {
             try
             {
 
-                context.SheetSchemaQs.Add(yqsbb);
+                context.Assignments.Add(yqsbb);
                 context.SaveChanges();
             }
             catch (Exception ex)
@@ -65,12 +67,12 @@ namespace onlineExam.DAL
             }
         }
 
-        public void DeleteSheetSchemaQ(SheetSchemaQ yqsbb)
+        public void DeleteAssignment(Assignment yqsbb)
         {
             try
             {
-                context.SheetSchemaQs.Attach(yqsbb);
-                context.SheetSchemaQs.Remove(yqsbb);
+                context.Assignments.Attach(yqsbb);
+                context.Assignments.Remove(yqsbb);
                 context.SaveChanges();
             }
             catch (Exception ex)
@@ -81,14 +83,14 @@ namespace onlineExam.DAL
                 throw ex;
             }
         }
-        public void UpdateSheetSchemaQ(SheetSchemaQ yqsbb, SheetSchemaQ origYqsbb)
+        public void UpdateAssignment(Assignment yqsbb, Assignment origYqsbb)
         {
             try
             {
 
-                context.SheetSchemaQs.Attach(origYqsbb);
+                context.Assignments.Attach(origYqsbb);
                 //context.ApplyCurrentValues("Departments", department);
-                ((IObjectContextAdapter)context).ObjectContext.ApplyCurrentValues("SheetSchemaQs", yqsbb);
+                ((IObjectContextAdapter)context).ObjectContext.ApplyCurrentValues("Assignments", yqsbb);
                 context.SaveChanges();
             }
             catch (Exception ex)

@@ -48,7 +48,7 @@ namespace onlineExam.DAL
 
         public IEnumerable<SheetQ> GetSheetQs()
         {
-            return context.SheetQs.Include("QTemplate").ToList();
+            return context.SheetQs.Include("Sheet.Assignment").Include("QTemplate").ToList();
         }
         public void InsertSheetQ(SheetQ yqsbb)
         {

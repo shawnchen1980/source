@@ -94,10 +94,11 @@ namespace onlineExam.Pages
                 {
                     char[] charSeparators = new char[] { ',' };
                     string[] arr1=item.answer.Split(charSeparators);
-                    for(int j = 0; j < arr1.Length - 1; j++)
-                    {
-                        cbl.Items[System.Convert.ToInt32(arr1[j])-1].Selected = true;
-                    }
+                    cbl.Items.Cast<ListItem>().Where(x => arr1.Contains(x.Value)).ToList().ForEach(x=>x.Selected=true);
+                    //for(int j = 0; j < arr1.Length - 1; j++)
+                    //{
+                    //    cbl.Items[System.Convert.ToInt32(arr1[j])-1].Selected = true;
+                    //}
                     //Console.Write(arr1);
                 }
             }
@@ -123,14 +124,15 @@ namespace onlineExam.Pages
             {
                 CheckBoxList cbl = (CheckBoxList)FormView1.FindControl("CheckBoxList1");
                 string res = "";
-                for (int i = 0; i < cbl.Items.Count; i++)
-                {
+                res = string.Join(",", cbl.Items.Cast<ListItem>().OrderBy(x=>x.Value).Where(x => x.Selected).Select(x => x.Value));
+                //for (int i = 0; i < cbl.Items.Count; i++)
+                //{
                     
-                    if (cbl.Items[i].Selected)
-                    {
-                        res += (i+1) + ",";
-                    }
-                }
+                //    if (cbl.Items[i].Selected)
+                //    {
+                //        res += (i+1) + ",";
+                //    }
+                //}
                 if (!String.IsNullOrEmpty(res))
                 {
                     e.NewValues["answer"] = res;
@@ -152,16 +154,44 @@ namespace onlineExam.Pages
         protected void btnUploadClick(object sender, EventArgs e)
         {
             HttpPostedFile file = Request.Files["myFile"];
-
-            using (QTemplateBLL bl = new QTemplateBLL())
+            using (SheetSchemaBLL bl=new SheetSchemaBLL())
             {
-                var items = bl.ImportQTemplate(file);
-                foreach (var item in items)
-                {
-                    bl.UpsertQTemplate(item);
-                }
-
+                bl.ImportSheetSchema(file, TextBox34.Text);
             }
+
+            //using (QTemplateBLL bl = new QTemplateBLL())
+            //{
+            //    var items = bl.ImportQTemplate(file);
+            //    foreach (var item in items)
+            //    {
+            //        bl.UpsertQTemplate(item);
+            //    }
+
+            //}
+            //using (OnlineExamContext context = new OnlineExamContext())
+            //{
+
+            //    int i = 1;
+            //    var sheetSchema = context.SheetSchemas.FirstOrDefault(x => x.name == TextBox34.Text);
+            //    if (sheetSchema == null)
+            //    {
+            //        sheetSchema = new SheetSchema { name = TextBox34.Text };
+            //        context.SheetSchemas.Add(sheetSchema);
+            //    }
+            //    foreach (ListItem item in ListBox2.Items)
+            //    {
+            //        int index = Convert.ToInt32(item.Value);
+            //        var qTemplate = context.QTemplates.FirstOrDefault(x => x.qid == index);
+            //        var sheetSchemaQ = new SheetSchemaQ { SheetSchema = sheetSchema, qOrder = i++, QTemplate = qTemplate };
+            //        context.SheetSchemaQs.Add(sheetSchemaQ);
+
+
+            //    }
+            //    context.SaveChanges();
+
+
+            //}
+
             FormView1.DataBind();
         }
 
@@ -306,10 +336,11 @@ namespace onlineExam.Pages
                 {
                     char[] charSeparators = new char[] { ',' };
                     string[] arr1 = sheetQ.answer.Split(charSeparators);
-                    for (int j = 0; j < arr1.Length - 1; j++)
-                    {
-                        cbl.Items.FindByValue(arr1[j]).Selected = true;
-                    }
+                    cbl.Items.Cast<ListItem>().OrderBy(x => x.Value).Where(x => arr1.Contains(x.Value)).ToList().ForEach(x => x.Selected = true);
+                    //for (int j = 0; j < arr1.Length - 1; j++)
+                    //{
+                    //    cbl.Items.FindByValue(arr1[j]).Selected = true;
+                    //}
                     //Console.Write(arr1);
                 }
             }
@@ -337,14 +368,15 @@ namespace onlineExam.Pages
             {
                 CheckBoxList cbl = (CheckBoxList)FormView2.FindControl("CheckBoxList12");
                 string res = "";
-                for (int i = 0; i < cbl.Items.Count; i++)
-                {
+                res = string.Join(",", cbl.Items.Cast<ListItem>().OrderBy(x => x.Value).Where(x => x.Selected).Select(x => x.Value));
+                //for (int i = 0; i < cbl.Items.Count; i++)
+                //{
 
-                    if (cbl.Items[i].Selected)
-                    {
-                        res += cbl.Items[i].Value + ",";
-                    }
-                }
+                //    if (cbl.Items[i].Selected)
+                //    {
+                //        res += cbl.Items[i].Value + ",";
+                //    }
+                //}
                 if (!String.IsNullOrEmpty(res))
                 {
                     e.NewValues["answer"] = res;
@@ -363,7 +395,7 @@ namespace onlineExam.Pages
         protected void LinkButton1Stu_Click(object sender, EventArgs e)
         {
             HttpPostedFile file = Request.Files["myFileStu"];
-
+            if (file.ContentLength == 0) return;
             using (StudentBLL bl = new StudentBLL())
             {
                 var items = bl.ImportStudent(file);
@@ -374,6 +406,138 @@ namespace onlineExam.Pages
 
             }
             GridView1.DataBind();
+        }
+
+        protected void Button6_Click(object sender, EventArgs e)
+        {
+            if (string.IsNullOrEmpty(TextBox33.Text)) return;
+            string exName = TextBox33.Text;
+            int stuCount;
+            using (OnlineExamContext context=new OnlineExamContext())
+            {
+                var list1 = context.Assignments.Include("Student").Where(x => x.name == exName).Select(x => x.Student.StudentId).ToList();
+                var list2 = context.Students.Where(x => !list1.Contains(x.StudentId)).ToList();
+                stuCount = list2.Count();
+                Exam exam = context.Exams.FirstOrDefault(x => x.name == exName) ?? new Exam { name = exName, open=true };
+                
+                context.Exams.Add(exam);
+                
+                foreach (var item in list2)
+                {
+                    var ass = new Assignment { name = exName, sheetSubmited = false, Student = item,Exam=exam };
+                    context.Assignments.Add(ass);
+
+                }
+                context.SaveChanges();
+                
+            }
+            Label13.Text = "考试-" + exName + "-新增考生" + stuCount + "人";
+        }
+
+        protected void Button5_Click(object sender, EventArgs e)
+        {
+            ClearCheckedRecords();
+            DropDownList1.DataBind();
+            GridView3.DataBind();
+        }
+
+        protected void CollectCheckedRecords()
+        {
+            List<string> list = new List<string>();
+            if (ViewState["SelectedRecords"] != null)
+            {
+                list = (List<string>)ViewState["SelectedRecords"];
+            }
+            foreach (GridViewRow row in GridView3.Rows)
+            {
+                CheckBox chk = (CheckBox)row.FindControl("chkSelect");
+                var selectedKey =
+                (GridView3.DataKeys[row.RowIndex].Value.ToString());
+                if (chk.Checked)
+                {
+                    if (!list.Contains(selectedKey))
+                    {
+                        list.Add(selectedKey);
+                    }
+                }
+                else
+                {
+                    if (list.Contains(selectedKey))
+                    {
+                        list.Remove(selectedKey);
+                    }
+                }
+            }
+            ViewState["SelectedRecords"] = list;
+        }
+        protected void ClearCheckedRecords()
+        {
+            if (ViewState["SelectedRecords"] != null)
+            {
+                List<string> list = (List<string>)ViewState["SelectedRecords"];
+                list.Clear();
+            }
+        }
+        protected void PaginateTheData(object sender, GridViewPageEventArgs e)
+        {
+            CollectCheckedRecords();
+            //GridView1.PageIndex = e.NewPageIndex;
+            //this.GetData();
+        }
+        protected void ReSelectSelectedRecords(object sender, GridViewRowEventArgs e)
+        {
+            List<string> list = ViewState["SelectedRecords"] as List<string>;
+            if (e.Row.RowType == DataControlRowType.DataRow && list != null)
+            {
+                var autoId = (GridView3.DataKeys[e.Row.RowIndex].Value.ToString());
+                if (list.Contains(autoId))
+                {
+                    CheckBox chk = (CheckBox)e.Row.FindControl("chkSelect");
+                    chk.Checked = true;
+                }
+            }
+        }
+
+        protected void Button7_Click(object sender, EventArgs e)
+        {
+            CollectCheckedRecords();
+            using (OnlineExamContext context=new OnlineExamContext())
+            {
+                //Exam exam = context.Exams.Include("Assignment.Student").FirstOrDefault(x => x.ExamId == Convert.ToInt32(DropDownList1.SelectedValue));
+                if (string.IsNullOrEmpty(DropDownList1.SelectedValue)) return;
+                int examId = Convert.ToInt32(DropDownList1.SelectedValue);
+                var assignments = context.Assignments.Include("Exam").Include("Sheet").Where(x => x.Exam.ExamId ==examId ).ToList();
+                var list=(List<string>)ViewState["SelectedRecords"];
+                var arr = list.Select(x => Convert.ToInt32(x)).ToArray();
+                var schemas = context.SheetSchemas.Include("SheetSchemaQs.QTemplate").Where(x => arr.Contains(x.SheetSchemaId)).ToArray();
+                int schemaCount = schemas.Count();
+                int index = 0, assCount = 0;
+                foreach (var item in assignments)
+                {
+                    if (item.SheetSchema != null) continue;
+                    index = index % schemaCount;
+                    
+                    //先分配试卷模板再分配试卷，如果当前任务已经包含试卷则不再分配，直接进行下一任务分配
+                    assCount++;
+                    item.SheetSchema = schemas[index];
+                    int qCount = schemas[index].SheetSchemaQs.Count();
+                    var qts = schemas[index].SheetSchemaQs.ToArray();
+                    Sheet st = new Sheet { timestamp = DateTime.Now };
+                    item.Sheet = st;
+                    context.Sheets.Add(st);
+                    var seqArr = Utilities.SeqGenerator.GenerateRandom(qCount);
+                    int j = 0;
+                    foreach (var qitem in qts)
+                    {
+                        SheetQ sq = new SheetQ { QTemplate = qitem.QTemplate, Sheet = st, optionOffset = qitem.QTemplate.qType == 1 || qitem.QTemplate.qType == 2 ? Utilities.SeqGenerator.GenerateRandomNum(4) : 0, qOrder = seqArr[j++], score=qitem.score, correctAnswer=qitem.QTemplate.answer };
+                        context.SheetQs.Add(sq);
+                    }
+                    index++;
+
+                }
+                context.SaveChanges();
+                Label15.Text = "当前完成" + assCount + "份试卷分配任务";
+            }
         }
     }
 

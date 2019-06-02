@@ -58,6 +58,24 @@ namespace onlineExam.Pages {
         protected global::System.Web.UI.WebControls.View View1;
         
         /// <summary>
+        /// TextBox34 控件。
+        /// </summary>
+        /// <remarks>
+        /// 自动生成的字段。
+        /// 若要进行修改，请将字段声明从设计器文件移到代码隐藏文件。
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox TextBox34;
+        
+        /// <summary>
+        /// RequiredFieldValidator1 控件。
+        /// </summary>
+        /// <remarks>
+        /// 自动生成的字段。
+        /// 若要进行修改，请将字段声明从设计器文件移到代码隐藏文件。
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.RequiredFieldValidator RequiredFieldValidator1;
+        
+        /// <summary>
         /// btnUpload 控件。
         /// </summary>
         /// <remarks>
@@ -229,6 +247,33 @@ namespace onlineExam.Pages {
         protected global::System.Web.UI.WebControls.GridView GridView1;
         
         /// <summary>
+        /// TextBox33 控件。
+        /// </summary>
+        /// <remarks>
+        /// 自动生成的字段。
+        /// 若要进行修改，请将字段声明从设计器文件移到代码隐藏文件。
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox TextBox33;
+        
+        /// <summary>
+        /// Button6 控件。
+        /// </summary>
+        /// <remarks>
+        /// 自动生成的字段。
+        /// 若要进行修改，请将字段声明从设计器文件移到代码隐藏文件。
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button Button6;
+        
+        /// <summary>
+        /// Label13 控件。
+        /// </summary>
+        /// <remarks>
+        /// 自动生成的字段。
+        /// 若要进行修改，请将字段声明从设计器文件移到代码隐藏文件。
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label Label13;
+        
+        /// <summary>
         /// View5 控件。
         /// </summary>
         /// <remarks>
@@ -247,6 +292,15 @@ namespace onlineExam.Pages {
         protected global::System.Web.UI.WebControls.ObjectDataSource ObjectDataSource4;
         
         /// <summary>
+        /// ObjectDataSource5 控件。
+        /// </summary>
+        /// <remarks>
+        /// 自动生成的字段。
+        /// 若要进行修改，请将字段声明从设计器文件移到代码隐藏文件。
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.ObjectDataSource ObjectDataSource5;
+        
+        /// <summary>
         /// DropDownList1 控件。
         /// </summary>
         /// <remarks>
@@ -263,5 +317,41 @@ namespace onlineExam.Pages {
         /// 若要进行修改，请将字段声明从设计器文件移到代码隐藏文件。
         /// </remarks>
         protected global::System.Web.UI.WebControls.Button Button5;
+        
+        /// <summary>
+        /// Label14 控件。
+        /// </summary>
+        /// <remarks>
+        /// 自动生成的字段。
+        /// 若要进行修改，请将字段声明从设计器文件移到代码隐藏文件。
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label Label14;
+        
+        /// <summary>
+        /// GridView3 控件。
+        /// </summary>
+        /// <remarks>
+        /// 自动生成的字段。
+        /// 若要进行修改，请将字段声明从设计器文件移到代码隐藏文件。
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.GridView GridView3;
+        
+        /// <summary>
+        /// Button7 控件。
+        /// </summary>
+        /// <remarks>
+        /// 自动生成的字段。
+        /// 若要进行修改，请将字段声明从设计器文件移到代码隐藏文件。
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button Button7;
+        
+        /// <summary>
+        /// Label15 控件。
+        /// </summary>
+        /// <remarks>
+        /// 自动生成的字段。
+        /// 若要进行修改，请将字段声明从设计器文件移到代码隐藏文件。
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label Label15;
     }
 }
