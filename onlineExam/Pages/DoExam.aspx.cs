@@ -40,6 +40,7 @@ namespace onlineExam.Pages
             Label lb2= (Label)MultiView1.Views[2].FindControl("Label2");
             ViewState["id"] = TextBox1.Text.Trim();
             ViewState["name"] = TextBox2.Text.Trim() ;
+            ViewState["arrChecked"] = null;
             MultiView1.ActiveViewIndex = 1;
         }
 
@@ -63,14 +64,23 @@ namespace onlineExam.Pages
 
         protected void ObjectDataSource1_Updating(object sender, ObjectDataSourceMethodEventArgs e)
         {
-            int id = Convert.ToInt32(GridView1.SelectedDataKey.Value.ToString());
+            int id = Convert.ToInt32(ViewState["assId"]);
             using (AssignmentBLL bll = new AssignmentBLL())
             {
                 Assignment origItem = bll.GetAssignment(id);
                 Assignment item = origItem.ShallowCopy();
-                item.lastLogin = DateTime.Now;
-                item.firstLogin = item.firstLogin ?? DateTime.Now;
-                item.ipAddress = GetIPAddress();
+                if (Convert.ToBoolean(ViewState["submitted"]))
+                {
+                    item.sheetSubmited = true;
+                    ViewState["submitted"] = false;
+                }
+                else
+                {
+                    item.lastLogin = DateTime.Now;
+                    item.firstLogin = item.firstLogin ?? DateTime.Now;
+                    item.ipAddress = GetIPAddress();
+                }
+                
                 e.InputParameters["item"] = item ;
                 e.InputParameters["origItem"] = origItem;
             }
@@ -98,14 +108,26 @@ namespace onlineExam.Pages
         {
             if(e.Row.RowType == DataControlRowType.DataRow)
             {
-                if (((Assignment)e.Row.DataItem).ipAddress == GetIPAddress()|| string.IsNullOrEmpty(((Assignment)e.Row.DataItem).ipAddress))
+                var i = e.Row.FindControl("CompareValidator1") as CompareValidator;
+                var j = e.Row.FindControl("RequiredFieldValidator3") as RequiredFieldValidator;
+                var k = e.Row.FindControl("TextBox3") as TextBox;
+                var l = e.Row.FindControl("Label13") as Label;
+                var m = e.Row.FindControl("LinkButton1") as LinkButton;
+                if (((Assignment)e.Row.DataItem).sheetSubmited)
                 {
-                    var i = e.Row.FindControl("CompareValidator1") as CompareValidator;
-                    var j = e.Row.FindControl("RequiredFieldValidator3") as RequiredFieldValidator;
-                    var k = e.Row.FindControl("TextBox3") as TextBox;
                     i.Enabled = false;
                     j.Enabled = false;
                     k.Visible = false;
+                    m.Visible = false;
+                    l.Visible = true;
+                }
+                else if (((Assignment)e.Row.DataItem).ipAddress == GetIPAddress()|| string.IsNullOrEmpty(((Assignment)e.Row.DataItem).ipAddress))
+                {
+                    
+                    i.Enabled = false;
+                    j.Enabled = false;
+                    k.Visible = false;
+                    l.Visible = false;
                 }
             }
         }
@@ -292,6 +314,15 @@ namespace onlineExam.Pages
             rpt.DataBind();
 
 
+        }
+
+        protected void Button2_Click(object sender, EventArgs e)
+        {
+            TextBox1.Text = "";
+            TextBox2.Text = "";
+            MultiView1.ActiveViewIndex = 0;
+            ViewState["submitted"] = true;
+            ObjectDataSource1.Update();
         }
     }
 }

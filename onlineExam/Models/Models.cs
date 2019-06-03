@@ -90,7 +90,8 @@ namespace onlineExam.Models
         public string answer { get; set; }
         public string answer2 { get; set; }
         public string answer3 { get; set; }
-        public int score { get; set; }
+        public int score { get; set; }//分值
+        public int scored { get; set; }//得分
         public Sheet Sheet { get; set; }
     }
     public class Sheet

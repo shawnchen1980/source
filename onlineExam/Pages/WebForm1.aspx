@@ -20,6 +20,7 @@
                     <asp:MenuItem Text="阅卷评分" Value="3"></asp:MenuItem>
                     <asp:MenuItem Text="创建考试名单" Value="4"></asp:MenuItem>
                     <asp:MenuItem Text="分配任务" Value="5"></asp:MenuItem>
+                    <asp:MenuItem Text="考试管理" Value="6"></asp:MenuItem>
                 </Items>
             </asp:Menu>
 
@@ -216,6 +217,26 @@
                     </asp:GridView>
                     <asp:Button ID="Button7" runat="server" OnClick="Button7_Click" Text="组卷并分配试卷" />
                     <asp:Label ID="Label15" runat="server"></asp:Label>
+                </asp:View>
+                <asp:View ID="View6" runat="server">
+
+
+                    <asp:ObjectDataSource ID="ObjectDataSource6" runat="server" DataObjectTypeName="OnlineExam.Models.Exam" OldValuesParameterFormatString="orig{0}" SelectMethod="GetExams" TypeName="onlineExam.BLL.ExamBLL" UpdateMethod="UpdateExam" ConflictDetection="CompareAllValues">
+                        <UpdateParameters>
+                            <asp:Parameter Name="qt" Type="Object" />
+                            <asp:Parameter Name="origqt" Type="Object" />
+                        </UpdateParameters>
+                    </asp:ObjectDataSource>
+                    <asp:GridView ID="GridView4" runat="server" AutoGenerateColumns="False" DataSourceID="ObjectDataSource6">
+                        <Columns>
+                            <asp:CommandField ShowEditButton="True" />
+                            <asp:BoundField DataField="ExamId" HeaderText="ExamId" SortExpression="ExamId" />
+                            <asp:BoundField DataField="name" HeaderText="name" SortExpression="name" />
+                            <asp:CheckBoxField DataField="open" HeaderText="open" SortExpression="open" />
+                        </Columns>
+                    </asp:GridView>
+
+
                 </asp:View>
             </asp:MultiView>
 

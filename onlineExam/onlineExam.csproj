@@ -139,6 +139,7 @@
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Scripts\jquery-3.3.1.intellisense.js" />
     <Content Include="Pages\DoExam.aspx" />
+    <Content Include="Pages\Submitted.html" />
     <Content Include="Pages\WebForm1.aspx" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
@@ -185,6 +186,7 @@
     </Compile>
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="BLL\AssignmentBLL.cs" />
+    <Compile Include="BLL\ExamBLL.cs" />
     <Compile Include="BLL\QTemplateBLL.cs" />
     <Compile Include="BLL\SheetQBLL.cs" />
     <Compile Include="BLL\SheetSchemaBLL.cs" />
