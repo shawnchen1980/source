@@ -61,7 +61,13 @@ namespace onlineExam.BLL
 
         public IEnumerable<Exam> GetExams()
         {
-            return examRepository.GetExams();
+            //要选择已经分配好试卷的考试
+            using (OnlineExamContext context=new OnlineExamContext())
+            {
+                var validExamArr = context.Assignments.Include("Exam").Include("Sheet").Where(x => x.Sheet != null).Select(x => x.Exam.ExamId).ToArray();
+                return context.Exams.Where(x => validExamArr.Contains(x.ExamId)).ToArray();
+            }
+            //return examRepository.GetExams();
         }
 
         public void InsertExam(Exam qt)

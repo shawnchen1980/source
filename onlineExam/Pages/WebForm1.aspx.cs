@@ -418,9 +418,13 @@ namespace onlineExam.Pages
                 var list1 = context.Assignments.Include("Student").Where(x => x.name == exName).Select(x => x.Student.StudentId).ToList();
                 var list2 = context.Students.Where(x => !list1.Contains(x.StudentId)).ToList();
                 stuCount = list2.Count();
-                Exam exam = context.Exams.FirstOrDefault(x => x.name == exName) ?? new Exam { name = exName, open=true };
+                Exam exam = context.Exams.FirstOrDefault(x => x.name == exName);
+                if (exam == null)
+                {
+                    exam = new Exam { name = exName, open = false };
+                    context.Exams.Add(exam);
+                }
                 
-                context.Exams.Add(exam);
                 
                 foreach (var item in list2)
                 {
@@ -511,6 +515,11 @@ namespace onlineExam.Pages
                 var arr = list.Select(x => Convert.ToInt32(x)).ToArray();
                 var schemas = context.SheetSchemas.Include("SheetSchemaQs.QTemplate").Where(x => arr.Contains(x.SheetSchemaId)).ToArray();
                 int schemaCount = schemas.Count();
+                if (schemaCount == 0)
+                {
+                    Label15.Text = "必须先选择试卷，再分配任务";
+                    return;
+                }
                 int index = 0, assCount = 0;
                 foreach (var item in assignments)
                 {
@@ -537,6 +546,7 @@ namespace onlineExam.Pages
                 }
                 context.SaveChanges();
                 Label15.Text = "当前完成" + assCount + "份试卷分配任务";
+                GridView4.DataBind();
             }
         }
     }

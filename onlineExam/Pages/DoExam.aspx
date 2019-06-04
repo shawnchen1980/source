@@ -34,10 +34,26 @@
         .checked::after{
             content:"\2713";
         }
+        body{
+            width:100vw;
+            height:100vh;
+            position:relative;
+            background-image: radial-gradient( circle farthest-corner at 12.3% 19.3%,  rgba(85,88,218,1) 0%, rgba(95,209,249,1) 100.2% );
+        }
+        .centerBlock{
+            position:absolute;
+            left:50%;
+            top:50%;
+            transform:translate(-50%,-50%);
+        }
     </style>
     <script>
         function openMaxWin() {
-            
+
+            //let numberOfEntries = window.history.length;
+            //window.history.go(-1 * numberOfEntries + 1);
+            //window.location.href = "http://www.mozilla.org";
+
             var params = [
                 'height=' + screen.height,
                 'width=' + screen.width,
@@ -48,11 +64,9 @@
 
             var popup = window.open('/pages/submitted.html', 'popup_window', params);
             popup.moveTo(0, 0);
+            
         }
-        function closeMe() {
-            window.opener = self;
-            window.close();
-        }
+        
     </script>
 </head>
 <body>
@@ -82,21 +96,24 @@
 
     <asp:MultiView ID="MultiView1" runat="server" ActiveViewIndex="0">
         <asp:View ID="View1" runat="server">
+            <div class="centerBlock">
             <asp:TextBox ID="TextBox1" placeholder="输入学号" runat="server"></asp:TextBox>
             <asp:RequiredFieldValidator ID="RequiredFieldValidator1" runat="server" ControlToValidate="TextBox1" ErrorMessage="*"></asp:RequiredFieldValidator>
             <asp:TextBox ID="TextBox2" placeholder="输入姓名" runat="server"></asp:TextBox>
             <asp:RequiredFieldValidator ID="RequiredFieldValidator2" runat="server" ControlToValidate="TextBox2" ErrorMessage="*"></asp:RequiredFieldValidator>
             <asp:Button ID="Button1" runat="server" Text="登录" OnClick="Button1_Click" />
+                <p>登录考试前请确认设备可以正常使用，登录后不得随意换机！</p>
+            </div>
         </asp:View>
         <asp:View ID="View2" runat="server">
-            <asp:GridView ID="GridView1" runat="server" AllowPaging="True" AutoGenerateColumns="False" DataSourceID="ObjectDataSource1" OnDataBinding="GridView1_DataBinding" DataKeyNames="AssignmentId" OnRowCommand="GridView1_RowCommand" OnRowDataBound="GridView1_RowDataBound" EnableViewState="False">
+            <asp:GridView ID="GridView1" runat="server" AllowPaging="True" AutoGenerateColumns="False" DataSourceID="ObjectDataSource1" OnDataBinding="GridView1_DataBinding" DataKeyNames="AssignmentId" OnRowCommand="GridView1_RowCommand" OnRowDataBound="GridView1_RowDataBound" EnableViewState="False" CellPadding="4" ForeColor="#333333" GridLines="None" CssClass="centerBlock">
+                <AlternatingRowStyle BackColor="White" />
                 <Columns>
-                    <asp:BoundField DataField="AssignmentId" HeaderText="AssignmentId" SortExpression="AssignmentId" />
-                    <asp:BoundField DataField="name" HeaderText="name" SortExpression="name" />
-                    <asp:BoundField DataField="ipAddress" HeaderText="ipAddress" SortExpression="ipAddress" />
-                    <asp:CheckBoxField DataField="sheetSubmited" HeaderText="sheetSubmited" SortExpression="sheetSubmited" />
-                    <asp:BoundField DataField="firstLogin" HeaderText="firstLogin" SortExpression="firstLogin" />
-                    <asp:BoundField DataField="lastLogin" HeaderText="lastLogin" SortExpression="lastLogin" />
+                    <asp:BoundField DataField="AssignmentId" HeaderText="任务编号" SortExpression="AssignmentId" />
+                    <asp:BoundField DataField="name" HeaderText="考试科目" SortExpression="name" />
+                    <asp:BoundField DataField="ipAddress" HeaderText="登录IP地址" SortExpression="ipAddress" />
+                    <asp:BoundField DataField="firstLogin" HeaderText="首次登录时间" SortExpression="firstLogin" />
+                    <asp:BoundField DataField="lastLogin" HeaderText="最近登录时间" SortExpression="lastLogin" />
                     <asp:TemplateField>
                         <ItemTemplate>
                             <asp:LinkButton ID="LinkButton1" runat="server" CommandArgument='<%# Eval("AssignmentId", "{0}") %>' OnClick="LinkButton1_Click">进入考试</asp:LinkButton>
@@ -107,9 +124,20 @@
                         </ItemTemplate>
                     </asp:TemplateField>
                 </Columns>
+                <EditRowStyle BackColor="#2461BF" />
                 <EmptyDataTemplate>
-                    当前没有为你分配考试任务
+                    <p>没有找到你的考试任务，请确认用户名和密码是否输入正确并再次登录</p>
+                    <button onclick="window.history.go(-1);return false;">返回登录</button>
                 </EmptyDataTemplate>
+                <FooterStyle BackColor="#507CD1" Font-Bold="True" ForeColor="White" />
+                <HeaderStyle BackColor="#507CD1" Font-Bold="True" ForeColor="White" />
+                <PagerStyle BackColor="#2461BF" ForeColor="White" HorizontalAlign="Center" />
+                <RowStyle BackColor="#EFF3FB" />
+                <SelectedRowStyle BackColor="#D1DDF1" Font-Bold="True" ForeColor="#333333" />
+                <SortedAscendingCellStyle BackColor="#F5F7FB" />
+                <SortedAscendingHeaderStyle BackColor="#6D95E1" />
+                <SortedDescendingCellStyle BackColor="#E9EBEF" />
+                <SortedDescendingHeaderStyle BackColor="#4870BE" />
             </asp:GridView>
         </asp:View>
         <asp:View ID="View3" runat="server">
@@ -117,8 +145,7 @@
             <asp:FormView ID="FormView1" runat="server" DataSourceID="ObjectDataSource2" AllowPaging="True" DefaultMode="Edit" OnDataBound="FormView1_DataBound" OnItemUpdating="FormView1_ItemUpdating" OnItemUpdated="FormView1_ItemUpdated" EnableViewState="False">
                 <EditItemTemplate>
                     <div class="main">
-                    SheetQId:
-                    <asp:Label ID="SheetQIdTextBox" Visible="false" runat="server" Text='<%# Bind("SheetQId") %>' />
+                    
                     <br />
                    
                     <br />
@@ -130,7 +157,7 @@
                     题干:
                     <asp:Label ID="qtext2Label2" runat="server" Text='<%# Eval("QTemplate.qtext2") %>' EnableViewState="False" />
                     <br />
-                    <asp:Label ID="Label12" runat="server" Visible="false" Text='<%# Eval("QTemplate.qType") %>' />
+                    
                     
                     <br />
                     回答区:
@@ -152,8 +179,7 @@
                         <asp:TextBox ID="TextBox32" runat="server" Text='<%# Bind("answer3") %>' TextMode="MultiLine" EnableViewState="False" />
                     </asp:Panel>
                     
-                    qOrder:
-                    <asp:TextBox ID="qOrderTextBox" runat="server" Text='<%# Bind("qOrder") %>' />
+
                     
                     
                     <br />
@@ -183,6 +209,7 @@
                         </asp:Repeater>
                         </div>
                         <asp:Button ID="Button2" runat="server" Text="交卷" OnClick="Button2_Click" OnClientClick="if(confirm('确认要交卷码？')) { openMaxWin(); return true;} return false;" />
+                        <button onclick="let numberOfEntries = window.history.length;window.history.go(-1 * numberOfEntries + 1);window.location.href='http://www.baidu.com';return false;">haha</button>
                     </div>
                     
                 </PagerTemplate>
@@ -191,6 +218,9 @@
           </div>
             
 
+        </asp:View>
+        <asp:View ID="View4" runat="server">
+            <h1 style="text-align:center;">考试结束，请关闭浏览器，离开考场！</h1>
         </asp:View>
     </asp:MultiView>
             

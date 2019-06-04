@@ -174,7 +174,8 @@
   </div>
               <div class="input-group-append">
    
-      <asp:LinkButton ID="LinkButton1Stu" CssClass="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm" runat="server" OnClick="LinkButton1Stu_Click" ><i class="fas fa-upload fa-sm text-white-50"></i>学生名单上传</asp:LinkButton>
+      <asp:LinkButton ID="LinkButton1Stu" CssClass="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm" runat="server" OnClick="LinkButton1Stu_Click" >学生名单上传</asp:LinkButton>
+                  <p>可以通过上传学生名单的方式新增学生，或者修改已有学生的信息，如果要修改信息，必须保证前后id一致，注意id不是学号</p>
 
   </div>
             <asp:ObjectDataSource ID="ObjectDataSource3" runat="server" SelectMethod="GetStudents" TypeName="onlineExam.DAL.StudentRepository" UpdateMethod="UpdateStudent"  ConflictDetection="CompareAllValues" DataObjectTypeName="onlineExam.Models.Student" OldValuesParameterFormatString="orig{0}">
@@ -194,6 +195,7 @@
                     </asp:GridView>
                     <asp:TextBox ID="TextBox33" placeholder="请输入考试名称" runat="server"></asp:TextBox>
                     <asp:Button ID="Button6" runat="server" Text="生成考试名单" OnClick="Button6_Click" />
+                    <p>此处为数据库内的所有考生分配考试任务，但还未分配试卷，因此此时的考试尚不能开放，每次分配试卷，都是针对那些尚未分配此次考试任务的学生，如果有新加入的学生，需要再次分配一遍同名考试任务</p>
                     <br />
                     <asp:Label ID="Label13" runat="server"></asp:Label>
                 </asp:View>
@@ -215,6 +217,7 @@
                             <asp:BoundField DataField="name" HeaderText="name" SortExpression="name" />
                         </Columns>
                     </asp:GridView>
+                    <p>组卷前必须要保证至少有一套试卷方案被选中，只有组卷后的考试才能被开启</p>
                     <asp:Button ID="Button7" runat="server" OnClick="Button7_Click" Text="组卷并分配试卷" />
                     <asp:Label ID="Label15" runat="server"></asp:Label>
                 </asp:View>
@@ -236,7 +239,7 @@
                         </Columns>
                     </asp:GridView>
 
-
+                    <p>只有分配过试卷的考试会出现在这里，才能被开启</p>
                 </asp:View>
             </asp:MultiView>
 

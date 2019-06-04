@@ -14,7 +14,12 @@ namespace onlineExam.Pages
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-
+            Response.Cache.SetNoStore();
+            Response.Cache.SetCacheability(System.Web.HttpCacheability.NoCache);
+            if (Convert.ToBoolean(Session["submitted"]))
+            {
+                MultiView1.ActiveViewIndex=3;
+            }
         }
         protected string GetIPAddress()
         {
@@ -41,7 +46,12 @@ namespace onlineExam.Pages
             ViewState["id"] = TextBox1.Text.Trim();
             ViewState["name"] = TextBox2.Text.Trim() ;
             ViewState["arrChecked"] = null;
+            if (Convert.ToBoolean(Session["submitted"]))
+            {
+                return;
+            }
             MultiView1.ActiveViewIndex = 1;
+            //Response.Redirect("/pages/doexam");
         }
 
         protected void GridView1_DataBinding(object sender, EventArgs e)
@@ -73,6 +83,7 @@ namespace onlineExam.Pages
                 {
                     item.sheetSubmited = true;
                     ViewState["submitted"] = false;
+                    Session["submitted"] = true;
                 }
                 else
                 {
@@ -91,9 +102,13 @@ namespace onlineExam.Pages
             GridViewRow clickedRow = ((LinkButton)sender).NamingContainer as GridViewRow;
             GridView1.SelectedIndex = clickedRow.RowIndex;
             ViewState["assId"] = Convert.ToString(GridView1.SelectedDataKey.Value);
-            ObjectDataSource1.Update();
             
+            if (Convert.ToBoolean(Session["submitted"]))
+            {
+                return;
+            }
             MultiView1.ActiveViewIndex = 2;
+            ObjectDataSource1.Update();
             FormView1.DataBind();
 
 
@@ -320,7 +335,7 @@ namespace onlineExam.Pages
         {
             TextBox1.Text = "";
             TextBox2.Text = "";
-            MultiView1.ActiveViewIndex = 0;
+            MultiView1.ActiveViewIndex = 3;
             ViewState["submitted"] = true;
             ObjectDataSource1.Update();
         }
