@@ -110,7 +110,12 @@
                 <AlternatingRowStyle BackColor="White" />
                 <Columns>
                     <asp:BoundField DataField="AssignmentId" HeaderText="任务编号" SortExpression="AssignmentId" />
-                    <asp:BoundField DataField="name" HeaderText="考试科目" SortExpression="name" />
+                    <asp:TemplateField HeaderText="考试科目" SortExpression="name">
+                        
+                        <ItemTemplate>
+                            <asp:Label ID="Label2" runat="server" Text='<%# Bind("Exam.name") %>'></asp:Label>
+                        </ItemTemplate>
+                    </asp:TemplateField>
                     <asp:BoundField DataField="ipAddress" HeaderText="登录IP地址" SortExpression="ipAddress" />
                     <asp:BoundField DataField="firstLogin" HeaderText="首次登录时间" SortExpression="firstLogin" />
                     <asp:BoundField DataField="lastLogin" HeaderText="最近登录时间" SortExpression="lastLogin" />

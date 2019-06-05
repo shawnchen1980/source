@@ -30,8 +30,8 @@ namespace onlineExam.BLL
                         var arr = sheet.Cells[str].ToArray();
                         list.Add(new Student()
                         {
-                            StudentId = Convert.ToInt32(arr[0].Value),
-                            xhId = Convert.ToString(arr[1].Value),
+                            StudentId = Convert.ToString(arr[1].Value),
+                            //xhId = Convert.ToString(arr[1].Value),
                             name = Convert.ToString(arr[2].Value),
                             classId = Convert.ToString(arr[3].Value)
                         });

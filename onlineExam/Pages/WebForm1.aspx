@@ -186,11 +186,9 @@
             </asp:ObjectDataSource>
                     <asp:GridView ID="GridView1" runat="server" AllowPaging="True" AutoGenerateColumns="False" DataSourceID="ObjectDataSource3">
                         <Columns>
-                            <asp:CommandField ShowEditButton="True" />
-                            <asp:BoundField DataField="StudentId" HeaderText="StudentId" SortExpression="StudentId" />
-                            <asp:BoundField DataField="xhId" HeaderText="xhId" SortExpression="xhId" />
-                            <asp:BoundField DataField="name" HeaderText="name" SortExpression="name" />
-                            <asp:BoundField DataField="classId" HeaderText="classId" SortExpression="classId" />
+                            <asp:BoundField DataField="StudentId" HeaderText="学号" SortExpression="StudentId" />
+                            <asp:BoundField DataField="name" HeaderText="姓名" SortExpression="name" />
+                            <asp:BoundField DataField="classId" HeaderText="班号" SortExpression="classId" />
                         </Columns>
                     </asp:GridView>
                     <asp:TextBox ID="TextBox33" placeholder="请输入考试名称" runat="server"></asp:TextBox>

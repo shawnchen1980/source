@@ -105,8 +105,8 @@ namespace onlineExam.Models
     }
     public class Student
     {
-        public int StudentId { get; set; }
-        public string xhId { get; set; }
+        public string StudentId { get; set; }
+        //public string xhId { get; set; }
         public string name { get; set; }
         public string classId { get; set; }
         
@@ -115,7 +115,7 @@ namespace onlineExam.Models
     public class Assignment
     {
         public int AssignmentId { get; set; }
-        public string name { get; set; }
+        //public string name { get; set; }
         public Student Student { get; set; }
         public Sheet Sheet { get; set; }
         public string ipAddress { get; set; }

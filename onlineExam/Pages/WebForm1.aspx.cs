@@ -415,7 +415,7 @@ namespace onlineExam.Pages
             int stuCount;
             using (OnlineExamContext context=new OnlineExamContext())
             {
-                var list1 = context.Assignments.Include("Student").Where(x => x.name == exName).Select(x => x.Student.StudentId).ToList();
+                var list1 = context.Assignments.Include("Student").Include("Exam").Where(x => x.Exam.name == exName).Select(x => x.Student.StudentId).ToList();
                 var list2 = context.Students.Where(x => !list1.Contains(x.StudentId)).ToList();
                 stuCount = list2.Count();
                 Exam exam = context.Exams.FirstOrDefault(x => x.name == exName);
@@ -428,7 +428,7 @@ namespace onlineExam.Pages
                 
                 foreach (var item in list2)
                 {
-                    var ass = new Assignment { name = exName, sheetSubmited = false, Student = item,Exam=exam };
+                    var ass = new Assignment {  sheetSubmited = false, Student = item,Exam=exam };
                     context.Assignments.Add(ass);
 
                 }
