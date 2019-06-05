@@ -29,14 +29,14 @@ namespace onlineExam.BLL
         {
             using (OnlineExamContext context=new OnlineExamContext())
             {
-                var sheet = context.SheetQs.Include("Sheet.Assignment").FirstOrDefault(x => x.SheetQId == item.SheetQId);
+                var sheet = context.SheetQs.Include("Sheet.Assignment").Include("QTemplate").FirstOrDefault(x => x.SheetQId == item.SheetQId);
                 
                 if (sheet == null) return;
                 if (sheet.Sheet.Assignment.sheetSubmited) return;
                 sheet.answer = item.answer;
                 sheet.answer2 = item.answer2;
                 sheet.answer3 = item.answer3;
-                sheet.scored = sheet.answer == sheet.correctAnswer ? sheet.score : 0;
+                sheet.scored = sheet.answer == sheet.correctAnswer&&sheet.QTemplate.qType!=4 ? sheet.score : 0;
                 context.SaveChanges();
 
             }

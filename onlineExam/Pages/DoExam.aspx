@@ -157,7 +157,9 @@
                     题干:
                     <asp:Label ID="qtext2Label2" runat="server" Text='<%# Eval("QTemplate.qtext2") %>' EnableViewState="False" />
                     <br />
-                    
+                    <!--以下隐藏信息不可去掉，否则答案将无法正常修改 -->
+                    <asp:Label ID="SheetQIdTextBox" Visible="false" runat="server" Text='<%# Bind("SheetQId") %>' />
+                    <asp:Label ID="Label12" runat="server" Visible="false" Text='<%# Eval("QTemplate.qType") %>' />
                     
                     <br />
                     回答区:
