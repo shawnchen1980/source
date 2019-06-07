@@ -55,6 +55,7 @@ namespace onlineExam.Pages
             list.Add(new { Code = item.op2, Name = "2" });
             list.Add(new { Code = item.op3, Name = "3" });
             list.Add(new { Code = item.op4, Name = "4" });
+            list.Add(new { Code = item.op5, Name = "5" });
             var panel1 = FormView1.FindControl("Panel1");
             var panel2 = FormView1.FindControl("Panel2");
             var panel4 = FormView1.FindControl("Panel4");
@@ -68,7 +69,11 @@ namespace onlineExam.Pages
                 RadioButtonList rbl = (RadioButtonList)FormView1.FindControl("RadioButtonList1");
                 if (item.qType == 3)
                 {
-                    list.RemoveRange(2, 2);
+                    list.RemoveRange(2, 3);
+                }
+                if (item.qType == 1)
+                {
+                    list.RemoveRange(4, 1);
                 }
                 rbl.DataSource = list;
                 rbl.DataTextField = "Code";

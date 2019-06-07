@@ -22,9 +22,9 @@ namespace onlineExam.Models
             //context.Sbs.AddRange(defaultStandards);
 
             IList<QTemplate> defaultYqsbbs = new List<QTemplate>();
-            defaultYqsbbs.Add(new QTemplate() { qid = 1, qType = 1,qtext1 = "选择题", qtext2 = "苹果什么颜色的", opLength = 4, op1 = "红", op2 = "黄", op3 = "蓝", op4 = "绿" });
-            defaultYqsbbs.Add(new QTemplate() { qid = 2, qType = 2, qtext1 = "多选题", qtext2 = "苹果可能是什么颜色的", opLength = 4, op1 = "红", op2 = "黄", op3 = "蓝", op4 = "绿" });
-            defaultYqsbbs.Add(new QTemplate() { qid = 3, qType = 3, qtext1 = "是否题", qtext2 = "苹果可能是什么颜色的", opLength = 2, op1 = "红", op2 = "黄", op3 = "蓝", op4 = "绿" });
+            defaultYqsbbs.Add(new QTemplate() { qid = 1, qType = 1,qtext1 = "选择题", qtext2 = "苹果什么颜色的", opLength = 4, op1 = "红", op2 = "黄", op3 = "蓝", op4 = "绿", op5 = "白" });
+            defaultYqsbbs.Add(new QTemplate() { qid = 2, qType = 2, qtext1 = "多选题", qtext2 = "苹果可能是什么颜色的", opLength = 4, op1 = "红", op2 = "黄", op3 = "蓝", op4 = "绿", op5 = "白" });
+            defaultYqsbbs.Add(new QTemplate() { qid = 3, qType = 3, qtext1 = "是否题", qtext2 = "苹果可能是什么颜色的", opLength = 2, op1 = "红", op2 = "黄", op3 = "蓝", op4 = "绿", op5 = "白" });
             defaultYqsbbs.Add(new QTemplate() { qid = 4, qType = 4, qtext1 = "简答题",
                 qtext2 = "苹果可能是什么颜色的苹果可能是什么颜色的苹果可能是什么颜色的苹果可能是什么颜色的" +
                 "苹果可能是什么颜色的苹果可能是什么颜色的苹果可能是什么颜色的苹果可能是什么颜色的苹果可能是什么颜色的苹果可能是什么颜色的苹果可能是什么颜色的苹果可能是什么颜色的" +
@@ -35,7 +35,9 @@ namespace onlineExam.Models
                 "苹果可能是什么颜色的苹果可能是什么颜色的苹果可能是什么颜色的苹果可能是什么颜色的苹果可能是什么颜色的苹果可能是什么颜色的苹果可能是什么颜色的苹果可能是什么颜色的" +
                 "苹果可能是什么颜色的苹果可能是什么颜色的苹果可能是什么颜色的苹果可能是什么颜色的苹果可能是什么颜色的苹果可能是什么颜色的苹果可能是什么颜色的苹果可能是什么颜色的" +
                 "苹果可能是什么颜色的苹果可能是什么颜色的苹果可能是什么颜色的苹果可能是什么颜色的苹果可能是什么颜色的苹果可能是什么颜色的苹果可能是什么颜色的苹果可能是什么颜色的",
-                opLength = 0, op1 = "红", op2 = "黄", op3 = "蓝", op4 = "绿" });
+                opLength = 0, op1 = "红", op2 = "黄", op3 = "蓝", op4 = "绿",
+                op5 = "白"
+            });
             //defaultYqsbbs.Add(new QTemplate() { yqbh = "abc125", yqmc = "服务器", dj = 13000, dwbh = "123", dwmc = "信息学院" });
 
             context.QTemplates.AddRange(defaultYqsbbs);
@@ -56,6 +58,7 @@ namespace onlineExam.Models
         public string op2 { get; set; }//选项2
         public string op3 { get; set; }//选项3
         public string op4 { get; set; }//选项4
+        public string op5 { get; set; }//选项5
         public string answer { get; set; }//答案
         public string answer2 { get; set; }//答案
         public string answer3 { get; set; }//答案

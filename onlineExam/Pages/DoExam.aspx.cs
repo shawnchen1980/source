@@ -166,9 +166,21 @@ namespace onlineExam.Pages
             list.Add(new { Code = item.op1, Name = "1" });
             list.Add(new { Code = item.op2, Name = "2" });
             list.Add(new { Code = item.op3, Name = "3" });
+
+            ArrayList list2 = new ArrayList();
+            list2.Add(new { Code = item.op1, Name = "1" });
+            list2.Add(new { Code = item.op2, Name = "2" });
+            list2.Add(new { Code = item.op3, Name = "3" });
+            list2.Add(new { Code = item.op4, Name = "4" });
+            list2.Add(new { Code = item.op5, Name = "5" });
+            list2.Add(new { Code = item.op1, Name = "1" });
+            list2.Add(new { Code = item.op2, Name = "2" });
+            list2.Add(new { Code = item.op3, Name = "3" });
+            list2.Add(new { Code = item.op4, Name = "4" });
+
             if (item.qType == 1 || item.qType == 2)
             {
-                list = list.GetRange(sheetQ.optionOffset, 4);
+                list = item.qType == 1?list.GetRange(sheetQ.optionOffset, 4): list2.GetRange(sheetQ.optionOffset, 5);
             }
             else
             {
@@ -186,6 +198,7 @@ namespace onlineExam.Pages
 
             if (item.qType == 1 || item.qType == 3)
             {
+                //单选和是非题
                 panel1.Visible = true;
                 panel2.Visible = false;
                 panel4.Visible = false;
@@ -205,6 +218,7 @@ namespace onlineExam.Pages
             }
             else if (item.qType == 2)
             {
+                //多选题
                 panel1.Visible = false;
                 panel2.Visible = true;
                 panel4.Visible = false;
@@ -219,21 +233,18 @@ namespace onlineExam.Pages
                     char[] charSeparators = new char[] { ',' };
                     string[] arr1 = sheetQ.answer.Split(charSeparators);
                     cbl.Items.Cast<ListItem>().OrderBy(x => x.Value).Where(x => arr1.Contains(x.Value)).ToList().ForEach(x => x.Selected = true);
-                    //for (int j = 0; j < arr1.Length - 1; j++)
-                    //{
-                    //    cbl.Items.FindByValue(arr1[j]).Selected = true;
-                    //}
-                    //Console.Write(arr1);
+
                 }
             }
             else
             {
+                //简答题
                 panel1.Visible = false;
                 panel2.Visible = false;
                 panel4.Visible = true;
             }
-            FormViewRow pagerRow = FormView1.BottomPagerRow;
-            pagerRow = FormView1.TopPagerRow;
+            FormViewRow pagerRow = FormView1.TopPagerRow;
+            //pagerRow = FormView1.TopPagerRow;
             Repeater rpt =(Repeater)pagerRow.FindControl("rptPagesHistory");
             if (rpt.Items.Count == 0) {
                 rpt.DataSource = Enumerable.Range(1, FormView1.PageCount);

@@ -64,15 +64,15 @@ namespace onlineExam.BLL
                         int length = sheet.Cells["A:A"].Count();
                         for (int i = 2,j=0; i <= length; i++,j++)
                         {
-                            string str = "A" + i + ":M" + i;
-                            if (sheet.Cells[str].Count() < 13)
+                            string str = "A" + i + ":N" + i;
+                            if (sheet.Cells[str].Count() < 14)
                             {
                                 continue;
                             }
                             var arr = sheet.Cells[str].ToArray();
                             var qt=new QTemplate()
                             {
-                                qid = Convert.ToInt32(arr[0].Value),
+                                //qid = Convert.ToInt32(arr[0].Value),
                                 qtext1 = Convert.ToString(arr[1].Value),
                                 qtext2 = Convert.ToString(arr[2].Value),
                                 qType = Convert.ToInt32(arr[3].Value),
@@ -81,11 +81,12 @@ namespace onlineExam.BLL
                                 op2 = Convert.ToString(arr[6].Value),
                                 op3 = Convert.ToString(arr[7].Value),
                                 op4 = Convert.ToString(arr[8].Value),
-                                answer = Convert.ToString(arr[9].Value),
-                                answer2 = Convert.ToString(arr[10].Value),
-                                answer3 = Convert.ToString(arr[11].Value)
+                                op5=Convert.ToString(arr[9].Value),
+                                answer = Convert.ToString(arr[10].Value),
+                                answer2 = Convert.ToString(arr[11].Value),
+                                answer3 = Convert.ToString(arr[12].Value)
                             };
-                            var schemaQ = new SheetSchemaQ { qOrder = j, score = Convert.ToInt32(arr[12].Value), QTemplate=qt, SheetSchema=schema };
+                            var schemaQ = new SheetSchemaQ { qOrder = j, score = Convert.ToInt32(arr[13].Value), QTemplate=qt, SheetSchema=schema };
                             context.SheetSchemaQs.Add(schemaQ);
                         }
                         context.SaveChanges();

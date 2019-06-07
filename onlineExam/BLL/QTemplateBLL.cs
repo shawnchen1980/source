@@ -55,7 +55,7 @@ namespace onlineExam.BLL
                         var arr = sheet.Cells[str].ToArray();
                         list.Add(new QTemplate()
                         {
-                            qid = Convert.ToInt32(arr[0].Value),
+                            //qid = Convert.ToInt32(arr[0].Value),
                             qtext1 = Convert.ToString(arr[1].Value),
                             qtext2 = Convert.ToString(arr[2].Value),
                             qType = Convert.ToInt32(arr[3].Value),
@@ -64,9 +64,10 @@ namespace onlineExam.BLL
                             op2 = Convert.ToString(arr[6].Value),
                             op3 = Convert.ToString(arr[7].Value),
                             op4 = Convert.ToString(arr[8].Value),
-                            answer = Convert.ToString(arr[9].Value),
-                            answer2 = Convert.ToString(arr[10].Value),
-                            answer3 = Convert.ToString(arr[11].Value)
+                            op5 = Convert.ToString(arr[9].Value),
+                            answer = Convert.ToString(arr[10].Value),
+                            answer2 = Convert.ToString(arr[11].Value),
+                            answer3 = Convert.ToString(arr[12].Value)
                         });
                     }
                     return list;

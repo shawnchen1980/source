@@ -20,6 +20,7 @@
             position:absolute;
             width:80%;
             left:20%;
+            padding:20px 50px 10px 10px;
         }
         .qListZone{
             display:flex;
@@ -38,7 +39,10 @@
             width:100vw;
             height:100vh;
             position:relative;
-            background-image: radial-gradient( circle farthest-corner at 12.3% 19.3%,  rgba(85,88,218,1) 0%, rgba(95,209,249,1) 100.2% );
+            background-color: #FBAB7E;
+            background-image: linear-gradient(62deg, #FBAB7E 0%, #F7CE68 100%);
+
+            
         }
         .centerBlock{
             position:absolute;
@@ -46,6 +50,89 @@
             top:50%;
             transform:translate(-50%,-50%);
         }
+        .answerBlock{
+            width:70%;
+            height:200px;
+        }
+        .submitButton{
+            display:block;
+            width:50%;
+            margin:auto;
+        }
+        .myButton {
+	background-color:#44c767;
+	-moz-border-radius:28px;
+	-webkit-border-radius:28px;
+	border-radius:28px;
+	border:1px solid #18ab29;
+	display:inline-block;
+	cursor:pointer;
+	color:#ffffff;
+	font-family:Arial;
+	font-size:17px;
+	padding:16px 31px;
+	text-decoration:none;
+	text-shadow:0px 1px 0px #2f6627;
+}
+.myButton:hover {
+	background-color:#5cbf2a;
+}
+.myButton:active {
+	position:relative;
+	top:1px;
+}
+
+.myButton1 {
+	-moz-box-shadow: 0px 0px 0px 2px #9fb4f2;
+	-webkit-box-shadow: 0px 0px 0px 2px #9fb4f2;
+	box-shadow: 0px 0px 0px 2px #9fb4f2;
+	background-color:#7892c2;
+	-moz-border-radius:10px;
+	-webkit-border-radius:10px;
+	border-radius:10px;
+	border:1px solid #4e6096;
+	display:inline-block;
+	cursor:pointer;
+	color:#ffffff;
+	font-family:Arial;
+	font-size:19px;
+	padding:12px 37px;
+	text-decoration:none;
+	text-shadow:0px 1px 0px #283966;
+}
+.myButton1:hover {
+	background-color:#476e9e;
+}
+.myButton1:active {
+	position:relative;
+	top:1px;
+}
+
+.myButton2 {
+	-moz-box-shadow:inset 0px 1px 0px 0px #cf866c;
+	-webkit-box-shadow:inset 0px 1px 0px 0px #cf866c;
+	box-shadow:inset 0px 1px 0px 0px #cf866c;
+	background-color:#d0451b;
+	-moz-border-radius:3px;
+	-webkit-border-radius:3px;
+	border-radius:3px;
+	border:1px solid #942911;
+	display:inline-block;
+	cursor:pointer;
+	color:#ffffff;
+	font-family:Arial;
+	font-size:13px;
+	padding:6px 24px;
+	text-decoration:none;
+	text-shadow:0px 1px 0px #854629;
+}
+.myButton2:hover {
+	background-color:#bc3315;
+}
+.myButton2:active {
+	position:relative;
+	top:1px;
+}
     </style>
     <script>
         function openMaxWin() {
@@ -150,25 +237,27 @@
             <asp:FormView ID="FormView1" runat="server" DataSourceID="ObjectDataSource2" AllowPaging="True" DefaultMode="Edit" OnDataBound="FormView1_DataBound" OnItemUpdating="FormView1_ItemUpdating" OnItemUpdated="FormView1_ItemUpdated" EnableViewState="False">
                 <EditItemTemplate>
                     <div class="main">
-                    
-                    <br />
-                   
-                    <br />
+                    <p style="color:red;">注意事项：每题答完后必须点击题目底部的保存按钮，并且看到左侧带框题号打勾之后才算是答题成功，没有保存过的答题不得分</p>
+                    <h2>
                     问题区
-                    <br />
-                    题目标题:
+                    </h2>
+                    
+                    <h3>
+                    
+                    
                     <asp:Label ID="qtext1Label2" runat="server" Text='<%# Eval("QTemplate.qtext1") %>' EnableViewState="False" />
-                    <br />
-                    题干:
+                    </h3>
+                    
                     <asp:Label ID="qtext2Label2" runat="server" Text='<%# Eval("QTemplate.qtext2") %>' EnableViewState="False" />
                     <br />
                     <!--以下隐藏信息不可去掉，否则答案将无法正常修改 -->
                     <asp:Label ID="SheetQIdTextBox" Visible="false" runat="server" Text='<%# Bind("SheetQId") %>' />
                     <asp:Label ID="Label12" runat="server" Visible="false" Text='<%# Eval("QTemplate.qType") %>' />
                     
-                    <br />
+                    <h3>
                     回答区:
-                    <br />
+                    </h3>
+                    
                     <asp:Panel ID="Panel12" runat="server">
                     <asp:RadioButtonList ID="RadioButtonList12" runat="server" >
                         
@@ -179,11 +268,11 @@
                     </asp:Panel>
                     <asp:Panel ID="Panel42" runat="server">
                         
-                        <asp:TextBox ID="TextBox12" runat="server" Text='<%# Bind("answer") %>' TextMode="MultiLine" EnableViewState="False" />
+                        <asp:TextBox ID="TextBox12" CssClass="answerBlock" runat="server" Text='<%# Bind("answer") %>' TextMode="MultiLine" EnableViewState="False" />
                         <br />
-                        <asp:TextBox ID="TextBox22" runat="server" Text='<%# Bind("answer2") %>' TextMode="MultiLine" EnableViewState="False" />
+                        <asp:TextBox ID="TextBox22" CssClass="answerBlock" runat="server" Text='<%# Bind("answer2") %>' TextMode="MultiLine" EnableViewState="False" />
                         <br />
-                        <asp:TextBox ID="TextBox32" runat="server" Text='<%# Bind("answer3") %>' TextMode="MultiLine" EnableViewState="False" />
+                        <asp:TextBox ID="TextBox32" CssClass="answerBlock" runat="server" Text='<%# Bind("answer3") %>' TextMode="MultiLine" EnableViewState="False" />
                     </asp:Panel>
                     
 
@@ -191,9 +280,9 @@
                     
                     <br />
                                         <br />
-                    <asp:LinkButton ID="UpdateButton" runat="server" CausesValidation="True" CommandName="Update" Text="保存" />
-                        <asp:linkbutton id="Linkbutton2" text="上一题"  commandname="Page"   commandargument="Prev"   runat="Server"/> 
-                        <asp:linkbutton id="NextButton" text="下一题"  commandname="Page"   commandargument="Next"   runat="Server"/> 
+                    <asp:LinkButton ID="UpdateButton" runat="server" CausesValidation="True" CssClass="myButton" CommandName="Update" Text="保存" />
+                        <asp:linkbutton id="Linkbutton2" text="上一题"  commandname="Page" CssClass="myButton1"   commandargument="Prev"   runat="Server"/> 
+                        <asp:linkbutton id="NextButton" text="下一题"  commandname="Page" CssClass="myButton1"  commandargument="Next"   runat="Server"/> 
                  </div>
                     
                 </EditItemTemplate>
@@ -215,8 +304,8 @@
                             </ItemTemplate>
                         </asp:Repeater>
                         </div>
-                        <asp:Button ID="Button2" runat="server" Text="交卷" OnClick="Button2_Click" OnClientClick="if(confirm('确认要交卷码？')) { openMaxWin(); return true;} return false;" />
-                        <button onclick="let numberOfEntries = window.history.length;window.history.go(-1 * numberOfEntries + 1);window.location.href='http://www.baidu.com';return false;">haha</button>
+                        <asp:Button ID="Button2" class="myButton2" runat="server" Text="交卷" OnClick="Button2_Click" OnClientClick="if(confirm('确认要交卷码？')) { openMaxWin(); return true;} return false;" />
+                        
                     </div>
                     
                 </PagerTemplate>
