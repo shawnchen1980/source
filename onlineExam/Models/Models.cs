@@ -9,7 +9,8 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace onlineExam.Models
 {
-    public class DBInitializer : DropCreateDatabaseIfModelChanges<OnlineExamContext>
+    //public class DBInitializer : CreateDatabaseIfNotExists<OnlineExamContext>
+     public class DBInitializer : DropCreateDatabaseIfModelChanges<OnlineExamContext>
     {
         protected override void Seed(OnlineExamContext context)
         {
@@ -52,6 +53,7 @@ namespace onlineExam.Models
         
         public string qtext1 { get; set; }//题面
         public string qtext2 { get; set; }//题面
+        [Index]
         public int qType { get; set; }// 1-single choice, 2-multiple choice,3 yes-no,4 long question
         public int opLength { get; set; }//选项数
         public string op1 { get; set; }//选项1
@@ -71,6 +73,7 @@ namespace onlineExam.Models
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int SheetSchemaQId { get; set; } //主键
         //public int SheetSchemaId { get; set; } //模板id
+        [Index]
         public int qOrder { get; set; }//题目顺序
         public QTemplate QTemplate { get; set; }//题目
         //public int QTemplateId { get; set; }//题目
@@ -87,6 +90,8 @@ namespace onlineExam.Models
     {
         public int SheetQId { get; set; }
         public QTemplate QTemplate { get; set; }
+
+        [Index]
         public int qOrder { get; set; }
         public int optionOffset { set; get; }
         public string correctAnswer { get; set; }
@@ -95,6 +100,10 @@ namespace onlineExam.Models
         public string answer3 { get; set; }
         public int score { get; set; }//分值
         public int scored { get; set; }//得分
+        public DateTime? timestamp { get; set; }//时间戳
+        //public DateTime? t2 { get; set; }
+        public string marker { get; set; }//阅卷人姓名
+        
         public Sheet Sheet { get; set; }
     }
     public class Sheet
@@ -102,6 +111,15 @@ namespace onlineExam.Models
         [ForeignKey("Assignment")]
         public int SheetId { get; set; }
         public DateTime timestamp { get; set; }
+        public string answers { get; set; }
+        public string answer1 { get; set; }
+        public string answer2 { get; set; }
+        public string answer3 { get; set; }
+        public string qOrders { get; set; }//题目打乱的顺序列表字符串
+        public string qOffs { get; set; }//题目选项偏移量列表字符串
+        public string qAns { get; set; }//打乱后的答案列表
+        public string marker { get; set; }
+        
         public ICollection<SheetQ> SheetQs { get; set; }
         public Assignment Assignment { get; set; }
        
@@ -138,7 +156,7 @@ namespace onlineExam.Models
         public int ExamId { get; set; }
         public string name { get; set; }
         public bool open { get; set; }
-        
+        public ICollection<Assignment> Assignments { get; set; }
     }
 
 }

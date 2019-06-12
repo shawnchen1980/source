@@ -20,7 +20,11 @@
             position:absolute;
             width:80%;
             left:20%;
-            padding:20px 50px 10px 10px;
+            padding:20px 50px 10px 50px;
+            border-left:2px solid black;
+            min-height:100vh;
+            max-width:700px;
+
         }
         .qListZone{
             display:flex;
@@ -51,7 +55,7 @@
             transform:translate(-50%,-50%);
         }
         .answerBlock{
-            width:70%;
+            width:100%;
             height:200px;
         }
         .submitButton{
@@ -125,6 +129,7 @@
 	padding:6px 24px;
 	text-decoration:none;
 	text-shadow:0px 1px 0px #854629;
+    margin-top:40px;
 }
 .myButton2:hover {
 	background-color:#bc3315;
@@ -171,25 +176,27 @@
                 </UpdateParameters>
             </asp:ObjectDataSource>
 
-            <asp:ObjectDataSource ID="ObjectDataSource2" runat="server" ConflictDetection="CompareAllValues" OldValuesParameterFormatString="orig{0}" OnSelecting="ObjectDataSource2_Selecting" SelectMethod="GetSheetQsForExam" TypeName="onlineExam.BLL.SheetQBLL" UpdateMethod="UpdateSheetQForExam" DataObjectTypeName="onlineExam.Models.SheetQ">
-                <SelectParameters>
-                    <asp:Parameter DefaultValue="0" Name="assId" Type="Int32" />
-                </SelectParameters>
+            <asp:ObjectDataSource ID="ObjectDataSource2" runat="server" OldValuesParameterFormatString="original_{0}" OnSelecting="ObjectDataSource2_Selecting" SelectMethod="GetSheetQsForExam" TypeName="onlineExam.BLL.SheetQBLL" UpdateMethod="UpdateSheetForExam"  OnUpdating="ObjectDataSource2_Updating" DataObjectTypeName="onlineExam.Models.SheetQ" >
+                
                 <UpdateParameters>
                     <asp:Parameter Name="item" Type="Object" />
-                    <asp:Parameter Name="origItem" Type="Object" />
                 </UpdateParameters>
             </asp:ObjectDataSource>
-
+<!--<SelectParameters>
+                    <asp:Parameter DefaultValue="0" Name="assId" Type="Int32" />
+                </SelectParameters>-->
     <asp:MultiView ID="MultiView1" runat="server" ActiveViewIndex="0">
         <asp:View ID="View1" runat="server">
             <div class="centerBlock">
+                <h1>华东政法大学军事理论考试</h1>
             <asp:TextBox ID="TextBox1" placeholder="输入学号" runat="server"></asp:TextBox>
             <asp:RequiredFieldValidator ID="RequiredFieldValidator1" runat="server" ControlToValidate="TextBox1" ErrorMessage="*"></asp:RequiredFieldValidator>
             <asp:TextBox ID="TextBox2" placeholder="输入姓名" runat="server"></asp:TextBox>
             <asp:RequiredFieldValidator ID="RequiredFieldValidator2" runat="server" ControlToValidate="TextBox2" ErrorMessage="*"></asp:RequiredFieldValidator>
             <asp:Button ID="Button1" runat="server" Text="登录" OnClick="Button1_Click" />
-                <p>登录考试前请确认设备可以正常使用，登录后不得随意换机！</p>
+                <p style="color:red;">登录考试前请确认设备可以正常使用，登录后不得随意换机！</p>
+                <p style="color:red;">
+登陆时必须输入正确的学号和姓名，输入时使用中文半角输入，输入错误将无法进入考试系统。如果姓名中带有分隔点或空格的，只需输入分隔点或空格之前的部分即可，比如：恩卡尔·叶尔波，只需要输入 恩卡尔 即可，姓名中间，前后都不要有空格</p>
             </div>
         </asp:View>
         <asp:View ID="View2" runat="server">
@@ -234,10 +241,10 @@
         </asp:View>
         <asp:View ID="View3" runat="server">
             <div class="container">
-            <asp:FormView ID="FormView1" runat="server" DataSourceID="ObjectDataSource2" AllowPaging="True" DefaultMode="Edit" OnDataBound="FormView1_DataBound" OnItemUpdating="FormView1_ItemUpdating" OnItemUpdated="FormView1_ItemUpdated" EnableViewState="False">
+            <asp:FormView ID="FormView1" runat="server" DataSourceID="ObjectDataSource2" AllowPaging="True" DefaultMode="Edit" OnDataBound="FormView1_DataBound" OnItemUpdating="FormView1_ItemUpdating" OnItemUpdated="FormView1_ItemUpdated" OnPageIndexChanging="FormView1_PageIndexChanging">
                 <EditItemTemplate>
                     <div class="main">
-                    <p style="color:red;">注意事项：每题答完后必须点击题目底部的保存按钮，并且看到左侧带框题号打勾之后才算是答题成功，没有保存过的答题不得分</p>
+                    <p style="color:red;">注意事项：所有题目回答完毕前必须点击题目底部的保存按钮,答题过程中可以分多次保存,题目编号打勾的为保存过的答题，没有保存过的答题不得分</p>
                     <h2>
                     问题区
                     </h2>
@@ -245,14 +252,15 @@
                     <h3>
                     
                     
-                    <asp:Label ID="qtext1Label2" runat="server" Text='<%# Eval("QTemplate.qtext1") %>' EnableViewState="False" />
+                    <asp:Label ID="qtext1Label2" runat="server" Text='<%# Eval("QTemplate.qtext1") %>' EnableViewState="true" />
                     </h3>
                     
-                    <asp:Label ID="qtext2Label2" runat="server" Text='<%# Eval("QTemplate.qtext2") %>' EnableViewState="False" />
+                    <asp:Label ID="qtext2Label2" runat="server" Text='<%# Eval("QTemplate.qtext2") %>' EnableViewState="true" />
                     <br />
                     <!--以下隐藏信息不可去掉，否则答案将无法正常修改 -->
                     <asp:Label ID="SheetQIdTextBox" Visible="false" runat="server" Text='<%# Bind("SheetQId") %>' />
                     <asp:Label ID="Label12" runat="server" Visible="false" Text='<%# Eval("QTemplate.qType") %>' />
+                    <asp:Label ID="Label3" runat="server" Visible="false" Text='<%# Eval("Sheet.SheetId") %>' />
                     
                     <h3>
                     回答区:
@@ -267,12 +275,17 @@
                         <asp:CheckBoxList ID="CheckBoxList12" runat="server"></asp:CheckBoxList>
                     </asp:Panel>
                     <asp:Panel ID="Panel42" runat="server">
-                        
-                        <asp:TextBox ID="TextBox12" CssClass="answerBlock" runat="server" Text='<%# Bind("answer") %>' TextMode="MultiLine" EnableViewState="False" />
+                        第一小题：
                         <br />
-                        <asp:TextBox ID="TextBox22" CssClass="answerBlock" runat="server" Text='<%# Bind("answer2") %>' TextMode="MultiLine" EnableViewState="False" />
+                        <asp:TextBox ID="TextBox12" CssClass="answerBlock" runat="server"  TextMode="MultiLine" EnableViewState="True" />
                         <br />
-                        <asp:TextBox ID="TextBox32" CssClass="answerBlock" runat="server" Text='<%# Bind("answer3") %>' TextMode="MultiLine" EnableViewState="False" />
+                        第二小题：
+                        <br />
+                        <asp:TextBox ID="TextBox22" CssClass="answerBlock" runat="server"  TextMode="MultiLine" EnableViewState="True" />
+                        <br />
+                        第三小题：
+                        <br />
+                        <asp:TextBox ID="TextBox32" CssClass="answerBlock" runat="server"  TextMode="MultiLine" EnableViewState="True" />
                     </asp:Panel>
                     
 
@@ -280,7 +293,7 @@
                     
                     <br />
                                         <br />
-                    <asp:LinkButton ID="UpdateButton" runat="server" CausesValidation="True" CssClass="myButton" CommandName="Update" Text="保存" />
+                    <asp:LinkButton ID="UpdateButton" runat="server" CausesValidation="True" CssClass="myButton" OnClick="UpdateButton_Click"  Text="保存" />
                         <asp:linkbutton id="Linkbutton2" text="上一题"  commandname="Page" CssClass="myButton1"   commandargument="Prev"   runat="Server"/> 
                         <asp:linkbutton id="NextButton" text="下一题"  commandname="Page" CssClass="myButton1"  commandargument="Next"   runat="Server"/> 
                  </div>
@@ -290,16 +303,16 @@
                 <PagerSettings Position="Top" />
                 <PagerTemplate>
                     <div class="left">
-                        <h3>
+                        <h3>学号：
                         <asp:Label ID="Label1" runat="server" Text="Label"></asp:Label></h3>
-                        <h3><asp:Label ID="Label2" runat="server" Text="Label"></asp:Label></h3>
+                        <h3>姓名：<asp:Label ID="Label2" runat="server" Text="Label"></asp:Label></h3>
                         <hr />
                         <h4>答题列表</h4>
                         <div class="qListZone">
                         <asp:Repeater ID="rptPagesHistory" runat="server" OnItemDataBound="rptPagesHistory_ItemDataBound" OnLoad="rptPagesHistory_Load">
                             <ItemTemplate>
                                 <div class="qListItem">
-                                <asp:LinkButton ID="lnkPageNumber"  runat="server" CommandName="Page" OnClick="lnkPageNumberHistory_Click" />
+                                <asp:LinkButton ID="lnkPageNumber"  runat="server" CommandName="Page" OnClick="lnkPageNumberHistory_Click"  /><!--OnClick="lnkPageNumberHistory_Click"-->
                                 </div>
                             </ItemTemplate>
                         </asp:Repeater>

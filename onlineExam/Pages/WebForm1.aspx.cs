@@ -506,16 +506,37 @@ namespace onlineExam.Pages
                 }
             }
         }
-
+        private OnlineExamContext AddToContext(OnlineExamContext context,int count,int commitCount,bool recreateContext,SheetSchemaQ sheetSchemaQ,Sheet sheet,int qorder)
+        {
+            context.Sheets.Attach(sheet);
+            context.SheetSchemaQs.Attach(sheetSchemaQ);
+            SheetQ sq = new SheetQ { timestamp = DateTime.Now, QTemplate = sheetSchemaQ.QTemplate, Sheet = sheet, optionOffset = sheetSchemaQ.QTemplate.qType == 1 || sheetSchemaQ.QTemplate.qType == 2 ? Utilities.SeqGenerator.GenerateRandomNum(4) : 0, qOrder = qorder, score = sheetSchemaQ.score, correctAnswer = sheetSchemaQ.QTemplate.answer };
+            context.SheetQs.Add(sq);
+            //context.SheetQs.Add(sheetQ);
+            if (count % commitCount == 0)
+            {
+                context.SaveChanges();
+                if (recreateContext)
+                {
+                    context.Dispose();
+                    context = new OnlineExamContext();
+                    context.Configuration.AutoDetectChangesEnabled = false;
+                    //context.Sheets.Attach
+                }
+            }
+            return context;
+        }
         protected void Button7_Click(object sender, EventArgs e)
         {
             CollectCheckedRecords();
-            using (OnlineExamContext context=new OnlineExamContext())
+            OnlineExamContext context = null;
+            try
             {
+                context = new OnlineExamContext();
                 //Exam exam = context.Exams.Include("Assignment.Student").FirstOrDefault(x => x.ExamId == Convert.ToInt32(DropDownList1.SelectedValue));
                 if (string.IsNullOrEmpty(DropDownList1.SelectedValue)) return;
                 int examId = Convert.ToInt32(DropDownList1.SelectedValue);
-                var assignments = context.Assignments.Include("Exam").Include("Sheet").Where(x => x.Exam.ExamId ==examId ).ToList();
+                var assignments = context.Assignments.Include("Exam").Include("Sheet").Include("SheetSchema").Where(x => x.Exam.ExamId ==examId ).ToList();
                 var list=(List<string>)ViewState["SelectedRecords"];
                 var arr = list.Select(x => Convert.ToInt32(x)).ToArray();
                 var schemas = context.SheetSchemas.Include("SheetSchemaQs.QTemplate").Where(x => arr.Contains(x.SheetSchemaId)).ToArray();
@@ -526,6 +547,7 @@ namespace onlineExam.Pages
                     return;
                 }
                 int index = 0, assCount = 0;
+                
                 foreach (var item in assignments)
                 {
                     if (item.SheetSchema != null) continue;
@@ -534,18 +556,165 @@ namespace onlineExam.Pages
                     //先分配试卷模板再分配试卷，如果当前任务已经包含试卷则不再分配，直接进行下一任务分配
                     assCount++;
                     item.SheetSchema = schemas[index];
-                    int qCount = schemas[index].SheetSchemaQs.Count();
-                    var qts = schemas[index].SheetSchemaQs.ToArray();
-                    Sheet st = new Sheet { timestamp = DateTime.Now };
+                    //int qCount = schemas[index].SheetSchemaQs.Count();
+                    var qts = schemas[index].SheetSchemaQs.OrderBy(x=>x.qOrder).ToArray();
+                    int qCount = qts.Length;
+                    var seqArr = Utilities.SeqGenerator.GenerateRandom(qCount);
+                    var qSeqArr = seqArr.Select(x => qts[x]).OrderBy(x => x.QTemplate.qType);
+                    string qOrderSeq=string.Join("|",qSeqArr.Select(x => x.qOrder));
+                    string qOffSeq = string.Join("|", qSeqArr.Select(x => { return x.QTemplate.qType == 1 || x.QTemplate.qType == 2 ? Utilities.SeqGenerator.GenerateRandomNum(4) : 0; }));
+                    string qAnsSeq = string.Join("|", qSeqArr.Select(x => x.QTemplate.answer));
+                    Sheet st = new Sheet { timestamp = DateTime.Now, qOrders=qOrderSeq,qOffs=qOffSeq, qAns=qAnsSeq };
                     item.Sheet = st;
                     context.Sheets.Add(st);
+                    //var seqArr = Utilities.SeqGenerator.GenerateRandom(qCount);
+                    //int j = 0;
+                    
+                    //foreach (var qitem in qts)
+                    //{
+                    //    SheetQ sq = new SheetQ { QTemplate = qitem.QTemplate, Sheet = st, optionOffset = qitem.QTemplate.qType == 1 || qitem.QTemplate.qType == 2 ? Utilities.SeqGenerator.GenerateRandomNum(4) : 0, qOrder = seqArr[j++], score=qitem.score, correctAnswer=qitem.QTemplate.answer };
+                    //    //context.SheetQs.Add(sq);
+                    //    context = AddToContext(context, sq, qcount, 100, true);
+                    //    qcount++;
+
+                    //}
+                    //context.SaveChanges();
+
+                    index++;
+
+                }
+                context.SaveChanges();
+                //assCount = 0;
+                //assignments = context.Assignments.Include("Exam").Include("Sheet.SheetQs").Include("SheetSchema.SheetSchemaQs.QTemplate").Where(x => x.Exam.ExamId == examId && x.Sheet.SheetQs.Count()==0).Take(120).ToList();
+                //int qcount = 1;
+                //foreach (var item in assignments)
+                //{
+                //    //if (item.SheetSchema != null) continue;
+                //    //index = index % schemaCount;
+
+                //    //先分配试卷模板再分配试卷，如果当前任务已经包含试卷则不再分配，直接进行下一任务分配
+                //    assCount++;
+                //    //item.SheetSchema = schemas[index];
+                //    //int qCount = schemas[index].SheetSchemaQs.Count();
+                //    var qts = item.SheetSchema.SheetSchemaQs;
+                //    int qCount = qts.Count();
+                //    Sheet st = item.Sheet;
+                    
+                //    var seqArr = Utilities.SeqGenerator.GenerateRandom(qCount);
+                //    int j = 0;
+                //    if (qCount == item.Sheet.SheetQs.Count()) continue;
+                //    foreach (var qitem in qts)
+                //    {
+                //        //SheetQ sq = new SheetQ {timestamp=DateTime.Now, QTemplate = qitem.QTemplate, Sheet = st, optionOffset = qitem.QTemplate.qType == 1 || qitem.QTemplate.qType == 2 ? Utilities.SeqGenerator.GenerateRandomNum(4) : 0, qOrder = seqArr[j++], score = qitem.score, correctAnswer = qitem.QTemplate.answer };
+                //        //context.SheetQs.Add(sq);
+                //        context = AddToContext(context,  qcount, 100, true,qitem,st, seqArr[j++]);
+                //        qcount++;
+
+                //    }
+                //    //context.SaveChanges();
+
+                //    index++;
+
+                //}
+                //context.SaveChanges();
+                Label15.Text = "当前完成" + assCount + "份试卷分配任务";
+                GridView4.DataBind();
+            }
+            finally
+            {
+                if (context != null)
+                    context.Dispose();
+
+            }
+        }
+        private void SheetAssembleOld()
+        {
+            OnlineExamContext context = null;
+            try
+            {
+                context = new OnlineExamContext();
+                //Exam exam = context.Exams.Include("Assignment.Student").FirstOrDefault(x => x.ExamId == Convert.ToInt32(DropDownList1.SelectedValue));
+                if (string.IsNullOrEmpty(DropDownList1.SelectedValue)) return;
+                int examId = Convert.ToInt32(DropDownList1.SelectedValue);
+                var assignments = context.Assignments.Include("Exam").Include("Sheet").Include("SheetSchema").Where(x => x.Exam.ExamId == examId).ToList();
+                var list = (List<string>)ViewState["SelectedRecords"];
+                var arr = list.Select(x => Convert.ToInt32(x)).ToArray();
+                var schemas = context.SheetSchemas.Include("SheetSchemaQs.QTemplate").Where(x => arr.Contains(x.SheetSchemaId)).ToArray();
+                int schemaCount = schemas.Count();
+                if (schemaCount == 0)
+                {
+                    Label15.Text = "必须先选择试卷，再分配任务";
+                    return;
+                }
+                int index = 0, assCount = 0;
+                //int qcount = 1;
+                //第一个循环，确保所有分配任务都有试卷模板
+                foreach (var item in assignments)
+                {
+                    if (item.SheetSchema != null) continue;
+                    index = index % schemaCount;
+
+                    //先分配试卷模板再分配试卷，如果当前任务已经包含试卷则不再分配，直接进行下一任务分配
+                    assCount++;
+                    item.SheetSchema = schemas[index];
+                    //int qCount = schemas[index].SheetSchemaQs.Count();
+                    //var qts = schemas[index].SheetSchemaQs.OrderBy(x => x.qOrder).ToArray();
+                    //int qCount = qts.Length;
+                    //var seqArr = Utilities.SeqGenerator.GenerateRandom(qCount);
+                    //var qSeqArr = seqArr.Select(x => qts[x]).OrderBy(x => x.QTemplate.qType);
+                    //string qOrderSeq = string.Join("|", qSeqArr.Select(x => x.qOrder));
+                    //string qOffSeq = string.Join("|", qSeqArr.Select(x => { return x.QTemplate.qType == 1 || x.QTemplate.qType == 2 ? Utilities.SeqGenerator.GenerateRandomNum(4) : 0; }));
+                    //string qAnsSeq = string.Join("|", qSeqArr.Select(x => x.QTemplate.answer));
+                    Sheet st = new Sheet { timestamp = DateTime.Now/*, qOrders = qOrderSeq, qOffs = qOffSeq, qAns = qAnsSeq */};
+                    item.Sheet = st;
+                    context.Sheets.Add(st);
+                    //var seqArr = Utilities.SeqGenerator.GenerateRandom(qCount);
+                    //int j = 0;
+
+                    //foreach (var qitem in qts)
+                    //{
+                    //    SheetQ sq = new SheetQ { QTemplate = qitem.QTemplate, Sheet = st, optionOffset = qitem.QTemplate.qType == 1 || qitem.QTemplate.qType == 2 ? Utilities.SeqGenerator.GenerateRandomNum(4) : 0, qOrder = seqArr[j++], score = qitem.score, correctAnswer = qitem.QTemplate.answer };
+                    //    //context.SheetQs.Add(sq);
+                    //    context = AddToContext(context, sq, qcount, 100, true);
+                    //    qcount++;
+
+                    //}
+                    context.SaveChanges();
+
+                    index++;
+
+                }
+                context.SaveChanges();
+                assCount = 0;
+                assignments = context.Assignments.Include("Exam").Include("Sheet.SheetQs").Include("SheetSchema.SheetSchemaQs.QTemplate").Where(x => x.Exam.ExamId == examId && x.Sheet.SheetQs.Count() == 0).Take(120).ToList();
+                int qcount = 1;
+                //第二个循环，确保每个分配任务下实体试卷的题目数与样板试卷的题目数相同
+                foreach (var item in assignments)
+                {
+                    //if (item.SheetSchema != null) continue;
+                    //index = index % schemaCount;
+
+                    //先分配试卷模板再分配试卷，如果当前任务已经包含试卷则不再分配，直接进行下一任务分配
+                    assCount++;
+                    //item.SheetSchema = schemas[index];
+                    //int qCount = schemas[index].SheetSchemaQs.Count();
+                    var qts = item.SheetSchema.SheetSchemaQs;
+                    int qCount = qts.Count();
+                    Sheet st = item.Sheet;
+
                     var seqArr = Utilities.SeqGenerator.GenerateRandom(qCount);
                     int j = 0;
+                    if (qCount == item.Sheet.SheetQs.Count()) continue;
                     foreach (var qitem in qts)
                     {
-                        SheetQ sq = new SheetQ { QTemplate = qitem.QTemplate, Sheet = st, optionOffset = qitem.QTemplate.qType == 1 || qitem.QTemplate.qType == 2 ? Utilities.SeqGenerator.GenerateRandomNum(4) : 0, qOrder = seqArr[j++], score=qitem.score, correctAnswer=qitem.QTemplate.answer };
-                        context.SheetQs.Add(sq);
+                        //SheetQ sq = new SheetQ {timestamp=DateTime.Now, QTemplate = qitem.QTemplate, Sheet = st, optionOffset = qitem.QTemplate.qType == 1 || qitem.QTemplate.qType == 2 ? Utilities.SeqGenerator.GenerateRandomNum(4) : 0, qOrder = seqArr[j++], score = qitem.score, correctAnswer = qitem.QTemplate.answer };
+                        //context.SheetQs.Add(sq);
+                        context = AddToContext(context, qcount, 100, true, qitem, st, seqArr[j++]);
+                        qcount++;
+
                     }
+                    //context.SaveChanges();
+
                     index++;
 
                 }
@@ -553,6 +722,55 @@ namespace onlineExam.Pages
                 Label15.Text = "当前完成" + assCount + "份试卷分配任务";
                 GridView4.DataBind();
             }
+            finally
+            {
+                if (context != null)
+                    context.Dispose();
+
+            }
+        }
+        protected void Button8_Click(object sender, EventArgs e)
+        {
+            GridView2.DataBind();
+            Label2.Text ="查询结果："+Convert.ToString(GridView2.Rows.Count)+"条记录";
+        }
+        protected string ShowStatus(object submitted,object firstLogin)
+        {
+            //Here you can place as many conditions as you like 
+            //Provided you always return either true or false
+            if (firstLogin == null && !Convert.ToBoolean(submitted))
+                return "待考";
+            else if (firstLogin != null && !Convert.ToBoolean(submitted))
+                return "考试";
+            else if (firstLogin != null && Convert.ToBoolean(submitted))
+                return "完成";
+            else
+                return "异常，已交卷但无登陆记录";
+                
+        }
+        protected int ShowScore(object submitted,object sheetQ)
+        {
+            if (!Convert.ToBoolean(submitted))
+            {
+                return 0;
+            }
+            var sheet = (Sheet)sheetQ;
+            return sheet.SheetQs.Select(x => x.scored).Sum();
+            //return 0;
+        }
+
+        protected void Button9_Click(object sender, EventArgs e)
+        {
+            if (TextBox6.Text == "1234321") { Menu1.Visible = true; MultiView1.ActiveViewIndex = 0; }
+           
+        }
+
+        protected void Button10_Click(object sender, EventArgs e)
+        {
+            var item = DropDownList2.Items[0];
+            DropDownList2.Items.Clear();
+            DropDownList2.Items.Add(item);
+            DropDownList2.DataBind();
         }
     }
 

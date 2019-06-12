@@ -13,7 +13,7 @@
         <div>
             
             
-            <asp:Menu ID="Menu1" runat="server" OnMenuItemClick="Menu1_MenuItemClick" Orientation="Horizontal">
+            <asp:Menu ID="Menu1" runat="server" OnMenuItemClick="Menu1_MenuItemClick" Orientation="Horizontal" Visible="False">
                 <Items>
                     <asp:MenuItem Text="试题导入" Value="1"></asp:MenuItem>
                     <asp:MenuItem Text="创建试卷模板" Value="2"></asp:MenuItem>
@@ -21,10 +21,11 @@
                     <asp:MenuItem Text="创建考试名单" Value="4"></asp:MenuItem>
                     <asp:MenuItem Text="分配任务" Value="5"></asp:MenuItem>
                     <asp:MenuItem Text="考试管理" Value="6"></asp:MenuItem>
+                    <asp:MenuItem Text="考试监控" Value="7"></asp:MenuItem>
                 </Items>
             </asp:Menu>
 
-            <asp:MultiView ID="MultiView1" runat="server" ActiveViewIndex="1">
+            <asp:MultiView ID="MultiView1" runat="server" ActiveViewIndex="7">
                 <asp:View ID="View1" runat="server">
                     <div class="custom-file">
     <input type="file" class="custom-file-input" id="myFile" name="myFile" lang="cn">
@@ -198,7 +199,7 @@
                     <asp:Label ID="Label13" runat="server"></asp:Label>
                 </asp:View>
                 <asp:View ID="View5" runat="server">
-                    <asp:ObjectDataSource ID="ObjectDataSource4" runat="server" SelectMethod="GetExams" TypeName="onlineExam.DAL.ExamRepository"></asp:ObjectDataSource>
+                    <asp:ObjectDataSource ID="ObjectDataSource4" runat="server" SelectMethod="GetOnlyExams" TypeName="onlineExam.DAL.ExamRepository" OldValuesParameterFormatString="original_{0}"></asp:ObjectDataSource>
                     <asp:ObjectDataSource ID="ObjectDataSource5" runat="server" SelectMethod="GetSheetSchemas" TypeName="onlineExam.DAL.SheetSchemaRepository"></asp:ObjectDataSource>
                     <asp:DropDownList ID="DropDownList1" runat="server" DataSourceID="ObjectDataSource4" DataTextField="name" DataValueField="ExamId" Height="16px">
                     </asp:DropDownList>
@@ -239,8 +240,68 @@
 
                     <p>只有分配过试卷的考试会出现在这里，才能被开启</p>
                 </asp:View>
-            </asp:MultiView>
+                <asp:View ID="View7" runat="server">
+                    <asp:ObjectDataSource ID="ObjectDataSource7" runat="server" OldValuesParameterFormatString="original_{0}" SelectMethod="GetOpenedExams" TypeName="onlineExam.BLL.ExamBLL"></asp:ObjectDataSource>
+                    <asp:ObjectDataSource ID="ObjectDataSource8" runat="server" OldValuesParameterFormatString="original_{0}" SelectMethod="GetAssignmentsByExam" TypeName="onlineExam.BLL.ExamBLL">
+                        <SelectParameters>
+                            <asp:ControlParameter ControlID="DropDownList2" DefaultValue="0" Name="exId" PropertyName="SelectedValue" Type="Int32" />
+                            <asp:ControlParameter ControlID="TextBox7" DefaultValue="" Name="sId" PropertyName="Text" Type="String" />
+                            <asp:ControlParameter ControlID="TextBox8" Name="sName" PropertyName="Text" Type="String" />
+                            <asp:ControlParameter ControlID="DropDownList3" DefaultValue="" Name="status" PropertyName="SelectedValue" Type="Int32" />
+                            <asp:ControlParameter ControlID="TextBox9" Name="sheetId" PropertyName="Text" Type="Int32" DefaultValue="" />
+                            <asp:ControlParameter ControlID="TextBox10" Name="classId" PropertyName="Text" Type="String" />
+                        </SelectParameters>
+                    </asp:ObjectDataSource>
+                    <asp:DropDownList ID="DropDownList2" runat="server" DataSourceID="ObjectDataSource7" DataTextField="name" DataValueField="ExamId" AppendDataBoundItems="True">
+                        <asp:ListItem Value="0">请选择考试场次</asp:ListItem>
+                    </asp:DropDownList>
+                    <asp:DropDownList ID="DropDownList3" runat="server">
+                        <asp:ListItem Value="0">全部</asp:ListItem>
+                        <asp:ListItem Value="1">待考</asp:ListItem>
+                        <asp:ListItem Value="2">考试</asp:ListItem>
+                        <asp:ListItem Value="3">完成</asp:ListItem>
+                    </asp:DropDownList>
+                    <asp:TextBox ID="TextBox7" placeholder="学生学号" runat="server"></asp:TextBox>
+                    <asp:TextBox ID="TextBox8" placeholder="学生姓名" runat="server"></asp:TextBox>
+                    <asp:TextBox ID="TextBox9" placeholder="试卷编号" runat="server"></asp:TextBox>
+                    <asp:TextBox ID="TextBox10" placeholder="班级编号" runat="server"></asp:TextBox>
+                    <asp:Button ID="Button8" runat="server" OnClick="Button8_Click" Text="查询" />
+                    <asp:Button ID="Button10" runat="server" Text="刷新" OnClick="Button10_Click" />
+                    <asp:Label ID="Label2" runat="server" Text=""></asp:Label>
+                    <asp:GridView ID="GridView2" runat="server" AutoGenerateColumns="False" DataSourceID="ObjectDataSource8" >
+                        <Columns>
+                            <asp:BoundField DataField="AssignmentId" HeaderText="任务编号" SortExpression="AssignmentId" />
+                            <asp:BoundField DataField="Student.StudentId" HeaderText="学号" SortExpression="Student" />
+                            <asp:BoundField DataField="Student.name" HeaderText="姓名" SortExpression="Student" />
+                            <asp:BoundField DataField="Exam.name" HeaderText="科目" />
+                            <asp:BoundField DataField="ipAddress" HeaderText="登陆IP地址" SortExpression="ipAddress" />
+                            <asp:TemplateField HeaderText="考试状态" SortExpression="sheetSubmited">
+                                
+                                <ItemTemplate>
+                                    <%# ShowStatus(Eval("sheetSubmited"),Eval("firstLogin")) %>
+                                    
+                                </ItemTemplate>
+                            </asp:TemplateField>
+                            <asp:BoundField DataField="firstLogin" HeaderText="初次登陆时间" SortExpression="firstLogin" />
+                            <asp:BoundField DataField="lastLogin" HeaderText="最近登陆时间" SortExpression="lastLogin" />
+                            <asp:BoundField DataField="SheetSchema.SheetSchemaId" HeaderText="试卷编号" />
+                            <asp:TemplateField HeaderText="当前得分">
+                                <ItemTemplate>
+                                    <%# ShowScore(Eval("sheetSubmited"),Eval("Sheet")) %>
+                                    
+                                </ItemTemplate>
 
+                            </asp:TemplateField>
+                            <asp:BoundField DataField="Student.classId" HeaderText="班级" SortExpression="Student" />
+                        </Columns>
+                    </asp:GridView>
+                </asp:View>
+                <asp:View ID="View8" runat="server">
+                    <asp:TextBox ID="TextBox6" runat="server" TextMode="Password"></asp:TextBox><asp:Button ID="Button9" runat="server" Text="解锁管理界面" OnClick="Button9_Click" />
+
+                </asp:View>
+            </asp:MultiView>
+            
         </div>
         
     </form>

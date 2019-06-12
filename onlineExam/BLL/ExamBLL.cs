@@ -69,6 +69,52 @@ namespace onlineExam.BLL
             }
             //return examRepository.GetExams();
         }
+        public IEnumerable<Exam> GetAllExams()
+        {
+            return examRepository.GetExams().ToList();
+        }
+        public IEnumerable<Exam> GetOpenedExams()
+        {
+            return examRepository.GetExams().Where(x => x.open).ToList();
+        }
+        public IEnumerable<Assignment> GetAssignmentsByExam(int exId, string sId, string sName, int status, int sheetId,string classId)
+        {
+            var query = examRepository.GetExams().SingleOrDefault(x => x.ExamId == exId);
+            if (query == null) return null;
+            IEnumerable<Assignment> res = query.Assignments;
+            if (!string.IsNullOrEmpty(sId))
+            {
+                res = res.Where(x => x.Student.StudentId == sId);
+            }
+            if (!string.IsNullOrEmpty(sName))
+            {
+                res = res.Where(x => x.Student.name == sName);
+            }
+            if (!string.IsNullOrEmpty(classId))
+            {
+                res = res.Where(x => x.Student.classId == classId);
+            }
+            if (sheetId > 0)
+            {
+                res = res.Where(x => x.SheetSchema.SheetSchemaId == sheetId);
+            }
+            switch (status)
+            {
+                case 1://查待考
+                    return res.Where(x => x.firstLogin == null);
+                    
+                case 2://查考试中
+                    return res.Where(x => x.firstLogin != null && !x.sheetSubmited);
+                    
+                case 3://查完成
+                    return res.Where(x => x.sheetSubmited);
+                    
+                default:
+                    return res;
+                    
+            }
+        }
+
 
         public void InsertExam(Exam qt)
         {

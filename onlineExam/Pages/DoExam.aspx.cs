@@ -16,6 +16,13 @@ namespace onlineExam.Pages
         {
             Response.Cache.SetNoStore();
             Response.Cache.SetCacheability(System.Web.HttpCacheability.NoCache);
+            //if (!IsPostBack)
+            //{
+            //    string cacheKey = GetIPAddress() + DateTime.Now;
+            //    ViewState["cacheKey"] = cacheKey;
+            //    ObjectDataSource2.CacheKeyDependency = cacheKey;
+            //    Cache[ObjectDataSource2.CacheKeyDependency] = cacheKey;
+            //}
             if (Convert.ToBoolean(Session["submitted"]))
             {
                 MultiView1.ActiveViewIndex=3;
@@ -109,6 +116,9 @@ namespace onlineExam.Pages
             }
             MultiView1.ActiveViewIndex = 2;
             ObjectDataSource1.Update();
+            //string cacheKey = ViewState["cacheKey"] as string;
+            //Cache.Remove(ObjectDataSource2.CacheKeyDependency);
+            //Cache[ObjectDataSource2.CacheKeyDependency] = cacheKey;
             FormView1.DataBind();
 
 
@@ -150,11 +160,14 @@ namespace onlineExam.Pages
         protected void ObjectDataSource2_Selecting(object sender, ObjectDataSourceSelectingEventArgs e)
         {
             e.InputParameters["assId"] = Convert.ToInt32(ViewState["assId"]);
+            
         }
         protected void FormView1_DataBound(object sender, EventArgs e)
         {
             SheetQ sheetQ = (SheetQ)FormView1.DataItem;
             if (sheetQ == null) return;
+            if (ViewState["assId"] == null) Response.Redirect("/pages/Submitted.html");
+            if(Convert.ToInt32(ViewState["assId"])!=sheetQ.Sheet.Assignment.AssignmentId) Response.Redirect("/pages/Submitted.html");
             QTemplate item = sheetQ.QTemplate;
             //QTemplate item = ((SheetQ)FormView1.DataItem).QTemplate;
             ArrayList arr = new ArrayList();
@@ -210,9 +223,14 @@ namespace onlineExam.Pages
                 rbl.DataSource = list;
                 rbl.DataTextField = "Code";
                 rbl.DataValueField = "Name";
-                if (!String.IsNullOrEmpty(sheetQ.answer))
+                if (ViewState["answers"]!=null)
                 {
-                    rbl.SelectedValue = sheetQ.answer;
+                    string[] answers = ViewState["answers"] as string[];
+                    if (!string.IsNullOrEmpty(answers[FormView1.PageIndex]))
+                    {
+                        rbl.SelectedValue = answers[FormView1.PageIndex];
+                    }
+                    
                 }
                 rbl.DataBind();
             }
@@ -228,11 +246,15 @@ namespace onlineExam.Pages
                 cbl.DataValueField = "Name";
 
                 cbl.DataBind();
-                if (!String.IsNullOrEmpty(sheetQ.answer))
+                if (ViewState["answers"]!=null)
                 {
+                    string[] answers = ViewState["answers"] as string[];
                     char[] charSeparators = new char[] { ',' };
-                    string[] arr1 = sheetQ.answer.Split(charSeparators);
-                    cbl.Items.Cast<ListItem>().OrderBy(x => x.Value).Where(x => arr1.Contains(x.Value)).ToList().ForEach(x => x.Selected = true);
+                    if (!string.IsNullOrEmpty(answers[FormView1.PageIndex])) {
+                        string[] arr1 = answers[FormView1.PageIndex].Split(charSeparators);
+                        cbl.Items.Cast<ListItem>().OrderBy(x => x.Value).Where(x => arr1.Contains(x.Value)).ToList().ForEach(x => x.Selected = true);
+                    }
+                    
 
                 }
             }
@@ -242,6 +264,12 @@ namespace onlineExam.Pages
                 panel1.Visible = false;
                 panel2.Visible = false;
                 panel4.Visible = true;
+                TextBox t1 = (TextBox)FormView1.FindControl("TextBox12");
+                TextBox t2 = (TextBox)FormView1.FindControl("TextBox22");
+                TextBox t3 = (TextBox)FormView1.FindControl("TextBox32");
+                t1.Text = ViewState["answer1"] as string;
+                t2.Text = ViewState["answer2"] as string;
+                t3.Text = ViewState["answer3"] as string;
             }
             FormViewRow pagerRow = FormView1.TopPagerRow;
             //pagerRow = FormView1.TopPagerRow;
@@ -325,6 +353,7 @@ namespace onlineExam.Pages
 
         protected void lnkPageNumberHistory_Click(object sender, EventArgs e)
         {
+            CollectData();
             LinkButton btn = (LinkButton)sender;
             FormView1.PageIndex =Convert.ToInt32(btn.CommandArgument);
             //FormView1.DataBind();
@@ -349,6 +378,100 @@ namespace onlineExam.Pages
             MultiView1.ActiveViewIndex = 3;
             ViewState["submitted"] = true;
             ObjectDataSource1.Update();
+        }
+
+        protected void FormView1_PageIndexChanging(object sender, FormViewPageEventArgs e)
+        {
+
+            CollectData();
+
+        }
+
+        protected void CollectData()
+        {
+            string[] answers;
+            if (ViewState["answers"] == null)
+            {
+                answers = new String[FormView1.PageCount];
+            }
+            else
+            {
+                answers = ViewState["answers"] as string[];
+            }
+            RadioButtonList rbl = (RadioButtonList)FormView1.FindControl("RadioButtonList12");
+            CheckBoxList cbl = (CheckBoxList)FormView1.FindControl("CheckBoxList12");
+            TextBox t1 = (TextBox)FormView1.FindControl("TextBox12");
+            TextBox t2 = (TextBox)FormView1.FindControl("TextBox22");
+            TextBox t3 = (TextBox)FormView1.FindControl("TextBox32");
+            if (rbl.Items.Count > 0)
+            {
+                answers[FormView1.PageIndex] = rbl.SelectedValue;
+                ViewState["answers"] = answers;
+            }
+            else if (cbl.Items.Count > 0)
+            {
+                answers[FormView1.PageIndex] = string.Join(",", cbl.Items.Cast<ListItem>().Where(x => x.Selected).OrderBy(x => x.Value).Select(x => x.Value).ToArray());
+                ViewState["answers"] = answers;
+            }
+            else
+            {
+                ViewState["answer1"] = t1.Text;
+                ViewState["answer2"] = t2.Text;
+                ViewState["answer3"] = t3.Text;
+            }
+        }
+
+        protected void ObjectDataSource2_Updating(object sender, ObjectDataSourceMethodEventArgs e)
+        {
+            
+            
+            //e.InputParameters.Add("answers", answers);
+            //e.InputParameters.Add("answer1", answer1);
+            //e.InputParameters.Add("answer2", answer2);
+            //e.InputParameters.Add("answer3", answer3);
+        }
+
+        protected void UpdateButton_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                CollectData();
+                string[] vAnswers = (ViewState["answers"] as string[]);
+                string answers = ViewState["answers"] == null ? "" : string.Join("|", vAnswers);
+                string answer1 = ViewState["answer1"] as string;
+                string answer2 = ViewState["answer2"] as string;
+                string answer3 = ViewState["answer3"] as string;
+                Label lbs = (Label)FormView1.FindControl("Label3");
+                using (OnlineExamContext context = new OnlineExamContext())
+                {
+                    int sheetId = Convert.ToInt32(lbs.Text);
+                    Sheet sheet = context.Sheets.SingleOrDefault(x => x.SheetId == sheetId);
+                    if (sheet != null)
+                    {
+                        sheet.answers = answers;
+                        sheet.answer1 = answer1;
+                        sheet.answer2 = answer2;
+                        sheet.answer3 = answer3;
+                        context.SaveChanges();
+                        var arr = ViewState["arrChecked"] as bool[] ?? new bool[FormView1.PageCount];
+                        for(int i = 0; i < vAnswers.Length; i++)
+                        {
+                            arr[i] = !string.IsNullOrEmpty(vAnswers[i]);
+                        }
+                        arr[FormView1.PageCount - 1] =!( string.IsNullOrEmpty(answer1) && string.IsNullOrEmpty(answer2) && string.IsNullOrEmpty(answer3));
+                        ViewState["arrChecked"] = arr;
+                        FormViewRow pagerRow = FormView1.TopPagerRow;
+                        Repeater rpt = (Repeater)pagerRow.FindControl("rptPagesHistory");
+                        rpt.DataSource = Enumerable.Range(1, FormView1.PageCount);
+                        rpt.DataBind();
+
+
+                    }
+                }
+            }catch (Exception ex)
+            {
+
+            }
         }
     }
 }

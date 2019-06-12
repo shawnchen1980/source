@@ -48,6 +48,10 @@ namespace onlineExam.DAL
 
         public IEnumerable<Exam> GetExams()
         {
+            return context.Exams.Include("Assignments.Student").Include("Assignments.SheetSchema").Include("Assignments.Sheet.SheetQs").ToList();
+        }
+        public IEnumerable<Exam> GetOnlyExams()
+        {
             return context.Exams.ToList();
         }
         public void InsertExam(Exam yqsbb)

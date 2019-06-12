@@ -6,7 +6,7 @@ using System.Web;
 using OfficeOpenXml;
 using onlineExam.DAL;
 using onlineExam.Models;
-
+using onlineExam.Utilities;
 namespace onlineExam.BLL
 {
     [DataObjectAttribute]
@@ -21,9 +21,35 @@ namespace onlineExam.BLL
         {
             this.sheetQRepository = sheetQRepository;
         }
-        public IEnumerable<SheetQ> GetSheetQsForExam(int assId)
+        public List<SheetQ> GetSheetQsForExam(int assId)
         {
-            return sheetQRepository.GetSheetQs().Where(x => x.Sheet.Assignment.AssignmentId == assId).OrderBy(x => x.QTemplate.qType).ThenBy(x => x.qOrder).ToList();
+            //return sheetQRepository.GetSheetQs().Where(x => x.Sheet.Assignment.AssignmentId == assId).OrderBy(x => x.QTemplate.qType).ThenBy(x => x.qOrder).ToList();
+            string assid = Convert.ToString(assId);
+            if (CacheHelper.Exists(assid))
+            {
+                List<SheetQ> res;
+                CacheHelper.Get<List<SheetQ>>(assid,out res);
+                if (res != null)
+                {
+                    return res;
+                }
+                
+            }
+            using (OnlineExamContext context=new OnlineExamContext())
+            {
+                var sheet = context.Sheets.Include("Assignment.SheetSchema.SheetSchemaQs.QTemplate").FirstOrDefault(x => x.Assignment.AssignmentId == assId);
+                if (sheet != null)
+                {
+                    var qArray = sheet.Assignment.SheetSchema.SheetSchemaQs.OrderBy(x => x.qOrder).Select(x => x.QTemplate).ToArray();
+                    Char dl = '|';
+                    var offArray = sheet.qOffs.Split(dl).ToArray().Select(x=>Convert.ToInt32(x)).ToArray();
+
+                    var res= sheet.qOrders.Split(dl).ToArray().Select(x=>Convert.ToInt32(x)).Select((x, i) => new SheetQ { QTemplate = qArray[x], qOrder = i, Sheet = sheet, optionOffset = offArray[i] }).ToList();
+                    CacheHelper.Add<List<SheetQ>>(res, assid, 1);
+                    return res;
+                }
+            }
+            return null;
         }
         public void UpdateSheetQForExam(SheetQ item, SheetQ origItem)
         {
@@ -42,7 +68,14 @@ namespace onlineExam.BLL
             }
            // sheetQRepository.UpdateSheetQ(item, origItem);
         }
+        public void UpdateSheetForExam(SheetQ item,string answers,string answer1,string answer2,string answer3)
+        {
 
+        }
+        public void UpdateSheetForExam(SheetQ item)
+        {
+
+        }
         #region IDisposable Support
         private bool disposedValue = false; // 要检测冗余调用
 
