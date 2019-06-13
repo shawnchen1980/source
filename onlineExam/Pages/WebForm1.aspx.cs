@@ -564,7 +564,8 @@ namespace onlineExam.Pages
                     string qOrderSeq=string.Join("|",qSeqArr.Select(x => x.qOrder));
                     string qOffSeq = string.Join("|", qSeqArr.Select(x => { return x.QTemplate.qType == 1 || x.QTemplate.qType == 2 ? Utilities.SeqGenerator.GenerateRandomNum(4) : 0; }));
                     string qAnsSeq = string.Join("|", qSeqArr.Select(x => x.QTemplate.answer));
-                    Sheet st = new Sheet { timestamp = DateTime.Now, qOrders=qOrderSeq,qOffs=qOffSeq, qAns=qAnsSeq };
+                    string qScoreSeq = string.Join("|", qSeqArr.Select(x => x.score));
+                    Sheet st = new Sheet { timestamp = DateTime.Now, qOrders=qOrderSeq,qOffs=qOffSeq, qAns=qAnsSeq,qScores=qScoreSeq };
                     item.Sheet = st;
                     context.Sheets.Add(st);
                     //var seqArr = Utilities.SeqGenerator.GenerateRandom(qCount);

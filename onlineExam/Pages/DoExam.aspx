@@ -208,6 +208,7 @@
                         
                         <ItemTemplate>
                             <asp:Label ID="Label2" runat="server" Text='<%# Bind("Exam.name") %>'></asp:Label>
+                            
                         </ItemTemplate>
                     </asp:TemplateField>
                     <asp:BoundField DataField="ipAddress" HeaderText="登录IP地址" SortExpression="ipAddress" />
@@ -215,6 +216,10 @@
                     <asp:BoundField DataField="lastLogin" HeaderText="最近登录时间" SortExpression="lastLogin" />
                     <asp:TemplateField>
                         <ItemTemplate>
+                            <asp:HiddenField ID="HiddenField1" runat="server" Value='<%# Eval("Sheet.answers") %>' />
+                            <asp:HiddenField ID="HiddenField2" runat="server" Value='<%# Eval("Sheet.answer1") %>' />
+                            <asp:HiddenField ID="HiddenField3" runat="server" Value='<%# Eval("Sheet.answer2") %>' />
+                            <asp:HiddenField ID="HiddenField4" runat="server" Value='<%# Eval("Sheet.answer3") %>' />
                             <asp:LinkButton ID="LinkButton1" runat="server" CommandArgument='<%# Eval("AssignmentId", "{0}") %>' OnClick="LinkButton1_Click">进入考试</asp:LinkButton>
                             <asp:TextBox ID="TextBox3" runat="server" TextMode="Password" placeholder="当前ip地址与上一次登录时不同，请输入换机密码"></asp:TextBox>
                             <asp:RequiredFieldValidator ID="RequiredFieldValidator3" runat="server" ControlToValidate="TextBox3" ErrorMessage="*" ForeColor="Red"></asp:RequiredFieldValidator>
@@ -329,7 +334,7 @@
 
         </asp:View>
         <asp:View ID="View4" runat="server">
-            <h1 style="text-align:center;">考试结束，请关闭浏览器，离开考场！</h1>
+            <h1 style="text-align:center;">考试结束，请离开考场！</h1>
         </asp:View>
     </asp:MultiView>
             

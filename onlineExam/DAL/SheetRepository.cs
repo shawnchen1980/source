@@ -49,7 +49,7 @@ namespace onlineExam.DAL
 
         public IEnumerable<Sheet> GetSheets()
         {
-            return context.Sheets.ToList();
+            return context.Sheets.Include("Assignment").Select(x=>x).ToList();
         }
         public void InsertSheet(Sheet yqsbb)
         {

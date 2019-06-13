@@ -109,7 +109,15 @@ namespace onlineExam.Pages
             GridViewRow clickedRow = ((LinkButton)sender).NamingContainer as GridViewRow;
             GridView1.SelectedIndex = clickedRow.RowIndex;
             ViewState["assId"] = Convert.ToString(GridView1.SelectedDataKey.Value);
-            
+            HiddenField hanswers= (HiddenField)GridView1.SelectedRow.FindControl("HiddenField1");
+            HiddenField hanswer1 = (HiddenField)GridView1.SelectedRow.FindControl("HiddenField2");
+            HiddenField hanswer2 = (HiddenField)GridView1.SelectedRow.FindControl("HiddenField3");
+            HiddenField hanswer3 = (HiddenField)GridView1.SelectedRow.FindControl("HiddenField4");
+            Char dl = '|';
+            ViewState["answers"] = string.IsNullOrEmpty(hanswers.Value) ? null : hanswers.Value.Split(dl) ;
+            ViewState["answer1"] = hanswer1.Value;
+            ViewState["answer2"] = hanswer2.Value;
+            ViewState["answer3"] = hanswer3.Value;
             if (Convert.ToBoolean(Session["submitted"]))
             {
                 return;
@@ -373,11 +381,14 @@ namespace onlineExam.Pages
 
         protected void Button2_Click(object sender, EventArgs e)
         {
+            //CollectData();
+            SaveData();
             TextBox1.Text = "";
             TextBox2.Text = "";
             MultiView1.ActiveViewIndex = 3;
             ViewState["submitted"] = true;
             ObjectDataSource1.Update();
+            
         }
 
         protected void FormView1_PageIndexChanging(object sender, FormViewPageEventArgs e)
@@ -430,8 +441,7 @@ namespace onlineExam.Pages
             //e.InputParameters.Add("answer2", answer2);
             //e.InputParameters.Add("answer3", answer3);
         }
-
-        protected void UpdateButton_Click(object sender, EventArgs e)
+        private void SaveData()
         {
             try
             {
@@ -454,11 +464,11 @@ namespace onlineExam.Pages
                         sheet.answer3 = answer3;
                         context.SaveChanges();
                         var arr = ViewState["arrChecked"] as bool[] ?? new bool[FormView1.PageCount];
-                        for(int i = 0; i < vAnswers.Length; i++)
+                        for (int i = 0; i < vAnswers.Length; i++)
                         {
                             arr[i] = !string.IsNullOrEmpty(vAnswers[i]);
                         }
-                        arr[FormView1.PageCount - 1] =!( string.IsNullOrEmpty(answer1) && string.IsNullOrEmpty(answer2) && string.IsNullOrEmpty(answer3));
+                        arr[FormView1.PageCount - 1] = !(string.IsNullOrEmpty(answer1) && string.IsNullOrEmpty(answer2) && string.IsNullOrEmpty(answer3));
                         ViewState["arrChecked"] = arr;
                         FormViewRow pagerRow = FormView1.TopPagerRow;
                         Repeater rpt = (Repeater)pagerRow.FindControl("rptPagesHistory");
@@ -468,10 +478,15 @@ namespace onlineExam.Pages
 
                     }
                 }
-            }catch (Exception ex)
-            {
-
             }
+            catch (Exception ex)
+            {
+                Response.Redirect("/pages/submitError.html");
+            }
+        }
+        protected void UpdateButton_Click(object sender, EventArgs e)
+        {
+            SaveData();
         }
     }
 }

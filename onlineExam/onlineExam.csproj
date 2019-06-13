@@ -140,6 +140,7 @@
     <None Include="Scripts\jquery-3.3.1.intellisense.js" />
     <Content Include="Pages\DoExam.aspx" />
     <Content Include="Pages\DoReview.aspx" />
+    <Content Include="Pages\submitError.html" />
     <Content Include="Pages\Submitted.html" />
     <Content Include="Pages\WebForm1.aspx" />
     <Content Include="Scripts\bootstrap.js" />
@@ -189,6 +190,7 @@
     <Compile Include="BLL\AssignmentBLL.cs" />
     <Compile Include="BLL\ExamBLL.cs" />
     <Compile Include="BLL\QTemplateBLL.cs" />
+    <Compile Include="BLL\SheetBLL.cs" />
     <Compile Include="BLL\SheetQBLL.cs" />
     <Compile Include="BLL\SheetSchemaBLL.cs" />
     <Compile Include="BLL\StudentBLL.cs" />

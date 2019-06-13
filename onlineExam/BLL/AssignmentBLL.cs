@@ -22,8 +22,8 @@ namespace onlineExam.BLL
         }
         public IEnumerable<Assignment> GetAssignmentsForLogin(string id,string name)
         {
-            return assignmentRepository.GetAssignments().Where(x => x.Student.StudentId == id && x.Student.name == name && x.Exam.open).ToList();
-
+            var res= assignmentRepository.GetAssignments().Where(x => x.Student.StudentId == id && x.Student.name == name && x.Exam.open).ToList();
+            return res;
             //return null;
         }
         public Assignment GetAssignment(int id)

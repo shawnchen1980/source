@@ -118,6 +118,9 @@ namespace onlineExam.Models
         public string qOrders { get; set; }//题目打乱的顺序列表字符串
         public string qOffs { get; set; }//题目选项偏移量列表字符串
         public string qAns { get; set; }//打乱后的答案列表
+        public string qScores { get; set; }//题目分值列表
+        public int score1 { get; set; }//自动评卷分
+        public int score2 { get; set; }//人工阅卷分
         public string marker { get; set; }
         
         public ICollection<SheetQ> SheetQs { get; set; }
