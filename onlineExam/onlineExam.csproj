@@ -138,6 +138,7 @@
     <Content Include="Content\bootstrap-theme.css.map" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Scripts\jquery-3.3.1.intellisense.js" />
+    <Content Include="Install\deployManual.txt" />
     <Content Include="Pages\DoExam.aspx" />
     <Content Include="Pages\DoReview.aspx" />
     <Content Include="Pages\submitError.html" />
@@ -260,6 +261,7 @@
       <DependentUpon>Site.Mobile.Master</DependentUpon>
     </Compile>
     <Compile Include="Utilities\CacheHelper.cs" />
+    <Compile Include="Utilities\GradeHelper.cs" />
     <Compile Include="Utilities\SeqGenerator.cs" />
     <Compile Include="Utilities\Tools.cs" />
     <Compile Include="ViewSwitcher.ascx.cs">

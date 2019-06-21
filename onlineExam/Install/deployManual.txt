@@ -1,0 +1,38 @@
+﻿
+Chances are you need to install .NET 4 (Which will also create a new AppPool for you)
+
+First make sure you have IIS installed then perform the following steps:
+
+Open your command prompt (Windows + R) and type cmd and press ENTER
+You may need to start this as an administrator if you have UAC enabled.
+To do so, locate the exe (usually you can start typing with Start Menu open), right click and select "Run as Administrator"
+Type cd C:\Windows\Microsoft.NET\Framework\v4.0.30319\ and press ENTER.
+Type aspnet_regiis.exe -ir and press ENTER again.
+If this is a fresh version of IIS (no other sites running on it) or you're not worried about the hosted sites breaking with a framework change you can use -i instead of -ir. This will change their AppPools for you and steps 5-on shouldn't be necessary.
+at this point you will see it begin working on installing .NET's framework in to IIS for you
+Close the DOS prompt, re-open your start menu and right click Computer and select Manage
+Expand the left-hand side (Services and Applications) and select Internet Information Services
+You'll now have a new applet within the content window exclusively for IIS.
+Expand out your computer and locate the Application Pools node, and select it. (You should now see ASP.NET v4.0 listed)
+Expand out your Sites node and locate the site you want to modify (select it)
+To the right you'll notice Basic Settings... just below the Edit Site text. Click this, and a new window should appear
+Select the .NET 4 AppPool using the Select... button and click ok.
+Restart the site, and you should be good-to-go.
+(You can repeat steps 7-on for every site you want to apply .NET 4 on as well).
+安装目标: windows server 2008
+安装步骤：
+1 安装iis
+2 安装asp.net 4.0
+a 用管理员方式打开cmd
+b Type cd C:\Windows\Microsoft.NET\Framework\v4.0.30319\ and press ENTER.
+c Type aspnet_regiis.exe -ir and press ENTER again.
+3 配置iis
+a 在计算机管理或管理工具中找到iis图标，点击进入
+b 右键网站，添加网站，设置网站路径和名称，右键该站点，编辑邦定
+c 点击应用程序池，如有asp.net 4.0选项则启动之，否则添加再启动
+d 右键站点-〉管理网站-〉高级设置...-〉应用程序池-〉选择asp.net 4.0
+e 右键站点-〉管理网站-〉启动
+4 配置站点文件夹权限，确保everyone拥有读写执行该文件夹文件权限
+5 新建数据库名为onlineExam
+6 数据库management studio中右键安全性-〉新建登陆-〉创建sa帐户，密码为helloworld
+7 进入webform1 安装试卷题目，加载学生列表（一次性）并生成考试任务（每场考试生成一次，填写不同的考试名称），针对每场考试组卷（每场考试组一次，每次组卷时选择考场名称和要用到的试卷）

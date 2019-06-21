@@ -756,7 +756,7 @@ namespace onlineExam.Pages
                 return 0;
             }
             var sheet = (Sheet)sheetQ;
-            return sheet.SheetQs.Select(x => x.scored).Sum();
+            return sheet.score1;
             //return 0;
         }
 
@@ -772,6 +772,23 @@ namespace onlineExam.Pages
             DropDownList2.Items.Clear();
             DropDownList2.Items.Add(item);
             DropDownList2.DataBind();
+        }
+
+
+
+        protected void GridView2_RowCommand(object sender, GridViewCommandEventArgs e)
+        {
+            if (e.CommandName == "ToUnSubmitted")
+            {
+                LinkButton lnkView = (LinkButton)e.CommandSource;
+                int assId = Convert.ToInt32(lnkView.CommandArgument);
+                using (AssignmentBLL bll = new AssignmentBLL())
+                {
+                    bll.UpdateToUnsubmitted(assId);
+                }
+                GridView2.DataBind();
+            }
+                    
         }
     }
 

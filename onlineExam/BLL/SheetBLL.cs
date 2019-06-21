@@ -25,6 +25,20 @@ namespace onlineExam.BLL
         {
             return this.sheetRepository.GetSheets().FirstOrDefault(x => x.Assignment.AssignmentId == assId);
         }
+        public void UpdateSheetForReview(Sheet sheet)
+        {
+            using (OnlineExamContext context=new OnlineExamContext())
+            {
+                Sheet s = context.Sheets.FirstOrDefault(x => x.SheetId == sheet.SheetId);
+                if (s != null)
+                {
+                    s.score1 = sheet.score1;
+                    s.score2 = sheet.score2;
+                    s.marker = sheet.marker;
+                    context.SaveChanges();
+                }
+            }
+        }
         #region IDisposable Support
         private bool disposedValue = false; // 要检测冗余调用
 

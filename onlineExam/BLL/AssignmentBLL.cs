@@ -35,11 +35,35 @@ namespace onlineExam.BLL
             try
             {
                 assignmentRepository.UpdateAssignment(item, origItem);
+                if (item.sheetSubmited)
+                {
+                    using (OnlineExamContext context=new OnlineExamContext())
+                    {
+                        Sheet sheet = context.Sheets.FirstOrDefault(x => x.SheetId == item.AssignmentId);
+                        if (sheet != null)
+                        {
+                            sheet.score1 = Utilities.GradeHelper.CalScore(sheet.answers, sheet.qAns, sheet.qScores);
+                            context.SaveChanges();
+                        }
+                    }
+                }
             }
             catch (Exception)
             {
 
                 throw new Exception("更新失败，可能由于设备不存在或数据不符合要求");
+            }
+        }
+        public void UpdateToUnsubmitted(int id)
+        {
+            using (OnlineExamContext context=new OnlineExamContext())
+            {
+                Assignment ass = context.Assignments.FirstOrDefault(x => x.AssignmentId == id);
+                if (ass != null)
+                {
+                    ass.sheetSubmited = false;
+                    context.SaveChanges();
+                }
             }
         }
         public void Dispose()

@@ -6,21 +6,93 @@
 <head runat="server">
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <style>
+        .loginCover{
+            position:fixed;
+            left:0;
+            right:0;
+            bottom:0;
+            top:0;
+            background-color:white;
+        }
+         .centerBlock{
+            position:absolute;
+            left:50%;
+            top:50%;
+            transform:translate(-50%,-50%);
+        }
         .answerBlock{
             width:80%;
         }
         .formView{
             width:100%;
         }
+        .flexContainer{
+            display:flex;
+            justify-content:center;
+            width:100%;
+        }
+        .flexLeft{
+            flex:0 0 auto;
+            width:300px;
+            height:80vh;
+            overflow:auto;
+        }
+        .flexRight{
+            flex:1 1 auto;
+
+        }
+        .flexItems{
+            display:flex;
+            width:100%;
+            flex-wrap:wrap;
+            align-content:center;
+            justify-content:center;
+        }
+        .flexItemLeft{
+            flex:0 0 auto;
+            width:20%;
+        }
+        .flexItemRight{
+            flex:1 1 auto;
+            width:75%;
+        }
+        .header5v{
+            height:5vh;
+        }
+        .header{
+            height:10vh;
+            overflow:auto;
+        }
+        .myButton {
+            margin-top:10px;
+	background-color:#44c767;
+	-moz-border-radius:28px;
+	-webkit-border-radius:28px;
+	border-radius:28px;
+	border:1px solid #18ab29;
+	display:inline-block;
+	cursor:pointer;
+	color:#ffffff;
+	font-family:Arial;
+	font-size:17px;
+	padding:16px 31px;
+	text-decoration:none;
+	text-shadow:0px 1px 0px #2f6627;
+}
+.myButton:hover {
+	background-color:#5cbf2a;
+}
+.myButton:active {
+	position:relative;
+	top:1px;
+}
     </style>
     <title></title>
 </head>
 <body>
     <form id="form1" runat="server">
         <div>
-            <asp:MultiView ID="MultiView1" runat="server" ActiveViewIndex="0">
-                <asp:View ID="View1" runat="server">
-                    <asp:ObjectDataSource ID="ObjectDataSource7" runat="server" OldValuesParameterFormatString="original_{0}" SelectMethod="GetAllExams" TypeName="onlineExam.BLL.ExamBLL" OnSelected="ObjectDataSource7_Selected"></asp:ObjectDataSource>
+            <asp:ObjectDataSource ID="ObjectDataSource7" runat="server" OldValuesParameterFormatString="original_{0}" SelectMethod="GetAllExams" TypeName="onlineExam.BLL.ExamBLL" OnSelected="ObjectDataSource7_Selected"></asp:ObjectDataSource>
                     <asp:ObjectDataSource ID="ObjectDataSource8" runat="server" OldValuesParameterFormatString="original_{0}" SelectMethod="GetAssignmentsByExam" TypeName="onlineExam.BLL.ExamBLL">
                         <SelectParameters>
                             <asp:ControlParameter ControlID="DropDownList2" DefaultValue="0" Name="exId" PropertyName="SelectedValue" Type="Int32" />
@@ -31,11 +103,27 @@
                             <asp:ControlParameter ControlID="TextBox10" Name="classId" PropertyName="Text" Type="String" />
                         </SelectParameters>
                     </asp:ObjectDataSource>
-                    <asp:ObjectDataSource ID="ObjectDataSource1" runat="server" OldValuesParameterFormatString="original_{0}" SelectMethod="GetSheetByAssignmentId" TypeName="onlineExam.BLL.SheetBLL">
+                    <asp:ObjectDataSource ID="ObjectDataSource1" runat="server" OldValuesParameterFormatString="original_{0}" SelectMethod="GetSheetByAssignmentId" TypeName="onlineExam.BLL.SheetBLL" DataObjectTypeName="onlineExam.Models.Sheet" OnUpdating="ObjectDataSource1_Updating" UpdateMethod="UpdateSheetForReview">
                         <SelectParameters>
                             <asp:ControlParameter ControlID="GridView2" Name="assId" PropertyName="SelectedValue" Type="Int32" />
                         </SelectParameters>
                     </asp:ObjectDataSource>
+            <div class="header5v">
+            <asp:Menu ID="Menu1" runat="server" BackColor="#B5C7DE" DynamicHorizontalOffset="2" Font-Names="Verdana" Font-Size="0.8em" ForeColor="#284E98" OnMenuItemClick="Menu1_MenuItemClick" Orientation="Horizontal" StaticSubMenuIndent="10px">
+                <DynamicHoverStyle BackColor="#284E98" ForeColor="White" />
+                <DynamicMenuItemStyle HorizontalPadding="5px" VerticalPadding="2px" />
+                <DynamicMenuStyle BackColor="#B5C7DE" />
+                <DynamicSelectedStyle BackColor="#507CD1" />
+                <Items>
+                    <asp:MenuItem Text="阅卷评分" Value="0"></asp:MenuItem>
+                    <asp:MenuItem Text="成绩列表" Value="1"></asp:MenuItem>
+                </Items>
+                <StaticHoverStyle BackColor="#284E98" ForeColor="White" />
+                <StaticMenuItemStyle HorizontalPadding="5px" VerticalPadding="2px" />
+                <StaticSelectedStyle BackColor="#507CD1" />
+            </asp:Menu>
+            </div>
+            <div class="header">
                     <asp:DropDownList ID="DropDownList2" runat="server" DataSourceID="ObjectDataSource7" DataTextField="name" DataValueField="ExamId" AppendDataBoundItems="True" OnDataBound="DropDownList2_DataBound">
                         <asp:ListItem Value="0">请选择考试场次</asp:ListItem>
                     </asp:DropDownList>
@@ -47,40 +135,132 @@
                     </asp:DropDownList>
                     <asp:TextBox ID="TextBox7" placeholder="学生学号" runat="server"></asp:TextBox>
                     <asp:TextBox ID="TextBox8" placeholder="学生姓名" runat="server"></asp:TextBox>
-                    <asp:TextBox ID="TextBox9" placeholder="试卷编号" runat="server"></asp:TextBox>
+                    <asp:TextBox ID="TextBox9" type="number" placeholder="试卷编号" runat="server"></asp:TextBox>
                     <asp:TextBox ID="TextBox10" placeholder="班级编号" runat="server"></asp:TextBox>
-                    <asp:Button ID="Button8" runat="server" OnClick="Button8_Click" Text="查询" />
-                    <asp:Button ID="Button10" runat="server" Text="刷新" OnClick="Button10_Click" />
+                    <asp:Button ID="Button8" runat="server" OnClick="Button8_Click" Text="查询试卷列表" />
+                    <asp:Button ID="Button10" runat="server" Text="刷新考试信息" OnClick="Button10_Click" />
+            <asp:Button ID="Button11" runat="server" OnClick="Button11_Click" Text="导出下载试卷" />
+            <br />
                     <asp:Label ID="Label2" runat="server" Text=""></asp:Label>
+            </div>            
+            <asp:MultiView ID="MultiView1" runat="server" ActiveViewIndex="2">
+                <asp:View ID="View1" runat="server">
+                    
+                    <div class="flexContainer">
+                        <div class="flexLeft">
                     <asp:GridView ID="GridView2" runat="server" AutoGenerateColumns="False" DataSourceID="ObjectDataSource8" CellPadding="4" DataKeyNames="AssignmentId" ForeColor="#333333" GridLines="None" OnSelectedIndexChanged="GridView2_SelectedIndexChanged" >
                         <AlternatingRowStyle BackColor="White" ForeColor="#284775" />
                         <Columns>
-                            <asp:CommandField ShowSelectButton="True" />
-                            <asp:BoundField DataField="AssignmentId" HeaderText="任务编号" SortExpression="AssignmentId" />
-                            <asp:BoundField DataField="Student.StudentId" HeaderText="学号" SortExpression="Student" />
-                            <asp:BoundField DataField="Student.name" HeaderText="姓名" SortExpression="Student" />
-                            <asp:BoundField DataField="Exam.name" HeaderText="科目" />
-                            <asp:BoundField DataField="ipAddress" HeaderText="登陆IP地址" SortExpression="ipAddress" />
-                            <asp:TemplateField HeaderText="考试状态" SortExpression="sheetSubmited">
-                                
+                            <asp:TemplateField  HeaderText="学号姓名">
                                 <ItemTemplate>
-                                    <%# ShowStatus(Eval("sheetSubmited"),Eval("firstLogin")) %>
-                                    
+                                    <asp:LinkButton ID="LinkButton1" runat="server" CausesValidation="False" CommandName="Select" Text='<%# Convert.ToString(Eval("Student.StudentId"))+" "+Convert.ToString(Eval("Student.name")) %>'></asp:LinkButton>
                                 </ItemTemplate>
                             </asp:TemplateField>
-                            <asp:BoundField DataField="firstLogin" HeaderText="初次登陆时间" SortExpression="firstLogin" />
-                            <asp:BoundField DataField="lastLogin" HeaderText="最近登陆时间" SortExpression="lastLogin" />
-                            <asp:BoundField DataField="SheetSchema.SheetSchemaId" HeaderText="试卷编号" />
-                            <asp:TemplateField HeaderText="当前得分">
-                                <ItemTemplate>
-                                    <%# ShowScore(Eval("Sheet.answers"),Eval("Sheet.qAns"),Eval("Sheet.qScores")) %>
-                                    
-                                </ItemTemplate>
-
-                            </asp:TemplateField>
-                            <asp:BoundField DataField="Student.classId" HeaderText="班级" SortExpression="Student" />
+                            
+                            
+                           
+                            
                         </Columns>
                         <EditRowStyle BackColor="#999999" />
+                        <EmptyDataTemplate>
+                            请先选择考试场次，输入相关查询条件，点查询按钮获取阅卷列表，如果查询后依旧看到本信息，说明没有满足查询条件的试卷
+                        </EmptyDataTemplate>
+                        <FooterStyle BackColor="#5D7B9D" Font-Bold="True" ForeColor="White" />
+                        <HeaderStyle BackColor="#5D7B9D" Font-Bold="True" ForeColor="White" />
+                        <PagerStyle BackColor="#284775" ForeColor="White" HorizontalAlign="Center" />
+                        <RowStyle BackColor="#F7F6F3" ForeColor="#333333" />
+                        <SelectedRowStyle BackColor="#E2DED6" Font-Bold="True" ForeColor="#333333" />
+                        <SortedAscendingCellStyle BackColor="#E9E7E2" />
+                        <SortedAscendingHeaderStyle BackColor="#506C8C" />
+                        <SortedDescendingCellStyle BackColor="#FFFDF8" />
+                        <SortedDescendingHeaderStyle BackColor="#6F8DAE" />
+                    </asp:GridView>
+                            </div>
+                        <div class="flexRight">
+                        <asp:FormView ID="FormView1" runat="server" DataSourceID="ObjectDataSource1" DefaultMode="Edit" CssClass="formView">
+            <EditItemTemplate>
+                
+                <asp:TextBox ID="SheetIdTextBox" Visible="false" runat="server" Text='<%# Bind("SheetId") %>'  />
+                
+                <asp:TextBox ID="timestampTextBox" Visible="false" runat="server" Text='<%# Bind("timestamp") %>' />
+
+                <asp:TextBox ID="answersTextBox" Visible="false" runat="server" Text='<%# Bind("answers") %>'  />
+
+                <asp:TextBox ID="qOrdersTextBox" Visible="false" runat="server" Text='<%# Bind("qOrders") %>' />
+
+                <asp:TextBox ID="qOffsTextBox" Visible="false" runat="server" Text='<%# Bind("qOffs") %>' />
+
+                <asp:TextBox ID="qAnsTextBox" Visible="false" runat="server" Text='<%# Bind("qAns") %>' />
+
+                <asp:TextBox ID="qScoresTextBox" Visible="false" runat="server" Text='<%# Bind("qScores") %>' />
+                <div class="flexItems">
+                    <div class="flexItemLeft">
+                第一小题回答:<asp:TextBox ID="TextBox1" type="number" value="0" min="0" max="30" runat="server"></asp:TextBox>
+                    </div>
+                <div class="flexItemRight">
+                <asp:TextBox ID="answer1TextBox" Enabled="false" runat="server" Text='<%# Eval("answer1") %>' Rows="10" TextMode="MultiLine" CssClass="answerBlock"/>
+                </div>
+                <div class="flexItemLeft">
+                第二小题回答:<asp:TextBox ID="TextBox2" type="number" value="0" min="0" max="30" runat="server"></asp:TextBox>
+                </div>
+                <div class="flexItemRight">
+                <asp:TextBox ID="answer2TextBox" Enabled="false" runat="server" Text='<%# Bind("answer2") %>' Rows="10" TextMode="MultiLine"  CssClass="answerBlock" />
+                </div>
+                <div class="flexItemLeft">
+                第三小题回答:<asp:TextBox ID="TextBox3" type="number" value="0" min="0" max="30" runat="server"></asp:TextBox>
+                </div>
+                <div class="flexItemRight">
+                <asp:TextBox ID="answer3TextBox" Enabled="false" runat="server" Text='<%# Bind("answer3") %>' Rows="10" TextMode="MultiLine" CssClass="answerBlock"/>
+                </div>
+                
+                <div class="flexItemLeft">
+                客观题得分:
+                    </div>
+                    <div class="flexItemRight">
+                <asp:TextBox ID="score1TextBox"  Enabled="false" runat="server" Text='<%# ShowScore(Eval("answers"),Eval("qAns"),Eval("qScores")) %>' />
+                </div>
+                        <div class="flexItemLeft">
+                主观题得分:
+                            </div>
+                    <div class="flexItemRight">
+                <asp:TextBox ID="score2TextBox" Enabled="false" runat="server" Text='<%# Bind("score2") %>' />
+                        </div>
+                <div class="flexItemLeft">
+                阅卷人:
+                    </div>
+                    <div class="flexItemRight">
+                <asp:TextBox ID="markerTextBox"  Enabled="false" runat="server" Text='<%# Bind("marker") %>' />
+                        </div>
+              </div>
+                
+                <asp:LinkButton ID="UpdateButton" runat="server" CausesValidation="True" CommandName="Update" CssClass="myButton" Text="保存" />
+                
+            </EditItemTemplate>
+           
+           
+        </asp:FormView>
+                            </div>
+                        </div>
+                </asp:View>
+                <asp:View ID="View2" runat="server">
+                    <asp:GridView ID="GridView1" runat="server" AutoGenerateColumns="False" CellPadding="4" DataSourceID="ObjectDataSource8" ForeColor="#333333" GridLines="None">
+                        <AlternatingRowStyle BackColor="White" ForeColor="#284775" />
+                        <Columns>
+                            <asp:BoundField DataField="AssignmentId" HeaderText="试卷编号" SortExpression="AssignmentId" />
+                            <asp:BoundField DataField="Student.StudentId" HeaderText="学号" />
+                            <asp:BoundField DataField="Student.name" HeaderText="姓名" />
+                            <asp:BoundField DataField="Sheet.score1" HeaderText="客观题总分" SortExpression="Sheet" />
+                            <asp:BoundField DataField="Sheet.score2" HeaderText="主观题总分" SortExpression="Sheet" />
+                            <asp:BoundField DataField="Sheet.marker" HeaderText="阅卷人" />
+                            <asp:BoundField DataField="ipAddress" HeaderText="IP地址" SortExpression="ipAddress" />
+                            <asp:CheckBoxField DataField="sheetSubmited" HeaderText="是否交卷" SortExpression="sheetSubmited" />
+                            <asp:BoundField DataField="firstLogin" HeaderText="初次登陆时间" SortExpression="firstLogin" />
+                            <asp:BoundField DataField="lastLogin" HeaderText="最后登陆时间" SortExpression="lastLogin" />
+                        </Columns>
+                        <EditRowStyle BackColor="#999999" />
+                        <EmptyDataTemplate>
+                            请先选择考试场次，输入相关查询条件，点查询按钮获取阅卷列表，如果查询后依旧看到本信息，说明没有满足查询条件的试卷
+                        </EmptyDataTemplate>
                         <FooterStyle BackColor="#5D7B9D" Font-Bold="True" ForeColor="White" />
                         <HeaderStyle BackColor="#5D7B9D" Font-Bold="True" ForeColor="White" />
                         <PagerStyle BackColor="#284775" ForeColor="White" HorizontalAlign="Center" />
@@ -92,99 +272,26 @@
                         <SortedDescendingHeaderStyle BackColor="#6F8DAE" />
                     </asp:GridView>
                 </asp:View>
+                <asp:View ID="View3" runat="server">
+                    <div class="loginCover">
+                        <div class="centerBlock">
+                            <h1>阅卷入口</h1>
+                        <asp:TextBox ID="TextBox4" placeholder="阅卷人" runat="server"></asp:TextBox>
+                        <asp:RequiredFieldValidator ID="RequiredFieldValidator1" runat="server" ControlToValidate="TextBox4" ErrorMessage="*" ForeColor="Red"></asp:RequiredFieldValidator>
+                        <asp:TextBox ID="TextBox5" placeholder="密码" runat="server" TextMode="Password"></asp:TextBox>
+                        <asp:RequiredFieldValidator ID="RequiredFieldValidator2" runat="server" ControlToValidate="TextBox5" ErrorMessage="*" ForeColor="Red"></asp:RequiredFieldValidator>
+                        <asp:Button ID="Button1" runat="server" Text="登陆" OnClick="Button1_Click" />
+                        <asp:CompareValidator ID="CompareValidator1" runat="server" ControlToValidate="TextBox5" ErrorMessage="登陆密码错误" ForeColor="Red" ValueToCompare="7777777"></asp:CompareValidator>
+                        </div>
+                        
+                    </div>
+                </asp:View>
             </asp:MultiView>
         </div>
         <br />
         <asp:Label ID="Label3" runat="server" Text=""></asp:Label>
           <br />
-        <asp:FormView ID="FormView1" runat="server" DataSourceID="ObjectDataSource1" DefaultMode="Edit" CssClass="formView">
-            <EditItemTemplate>
-                
-                <asp:TextBox ID="SheetIdTextBox" Visible="false" runat="server" Text='<%# Bind("SheetId") %>'  />
-                
-                <asp:TextBox ID="timestampTextBox" Visible="false" runat="server" Text='<%# Bind("timestamp") %>' />
-
-                <asp:TextBox ID="answersTextBox" Visible="false" runat="server" Text='<%# Bind("answers") %>'  />
-
-                第一小题回答:
-                <asp:TextBox ID="answer1TextBox" Enabled="false" runat="server" Text='<%# Eval("answer1") %>' Rows="10" TextMode="MultiLine" CssClass="answerBlock"/>
-                <br />
-                第二小题回答:
-                <asp:TextBox ID="answer2TextBox" Enabled="false" runat="server" Text='<%# Bind("answer2") %>' Rows="10" TextMode="MultiLine"  CssClass="answerBlock" />
-                <br />
-                第三小题回答:
-                <asp:TextBox ID="answer3TextBox" Enabled="false" runat="server" Text='<%# Bind("answer3") %>' Rows="10" TextMode="MultiLine" CssClass="answerBlock"/>
-
-                <asp:TextBox ID="qOrdersTextBox" Visible="false" runat="server" Text='<%# Bind("qOrders") %>' />
-
-                <asp:TextBox ID="qOffsTextBox" Visible="false" runat="server" Text='<%# Bind("qOffs") %>' />
-
-                <asp:TextBox ID="qAnsTextBox" Visible="false" runat="server" Text='<%# Bind("qAns") %>' />
-
-                <asp:TextBox ID="qScoresTextBox" Visible="false" runat="server" Text='<%# Bind("qScores") %>' />
-                <br />
-                客观题评分:
-                <asp:TextBox ID="score1TextBox"  Enabled="false" runat="server" Text='<%# ShowScore(Eval("answers"),Eval("qAns"),Eval("qScores")) %>' />
-                <br />
-                主观题评分:
-                <asp:TextBox ID="score2TextBox" runat="server" Text='<%# Bind("score2") %>' />
-                <br />
-                阅卷人:
-                <asp:TextBox ID="markerTextBox"  Enabled="false" runat="server" Text='<%# Bind("marker") %>' />
-                
-                <asp:LinkButton ID="UpdateButton" runat="server" CausesValidation="True" CommandName="Update" Text="更新" />
-                &nbsp;<asp:LinkButton ID="UpdateCancelButton" runat="server" CausesValidation="False" CommandName="Cancel" Text="取消" />
-            </EditItemTemplate>
-           
-            <ItemTemplate>
-                SheetId:
-                <asp:Label ID="SheetIdLabel" runat="server" Text='<%# Bind("SheetId") %>' />
-                <br />
-                timestamp:
-                <asp:Label ID="timestampLabel" runat="server" Text='<%# Bind("timestamp") %>' />
-                <br />
-                answers:
-                <asp:Label ID="answersLabel" runat="server" Text='<%# Bind("answers") %>' />
-                <br />
-                answer1:
-                <asp:Label ID="answer1Label" runat="server" Text='<%# Bind("answer1") %>' />
-                <br />
-                answer2:
-                <asp:Label ID="answer2Label" runat="server" Text='<%# Bind("answer2") %>' />
-                <br />
-                answer3:
-                <asp:Label ID="answer3Label" runat="server" Text='<%# Bind("answer3") %>' />
-                <br />
-                qOrders:
-                <asp:Label ID="qOrdersLabel" runat="server" Text='<%# Bind("qOrders") %>' />
-                <br />
-                qOffs:
-                <asp:Label ID="qOffsLabel" runat="server" Text='<%# Bind("qOffs") %>' />
-                <br />
-                qAns:
-                <asp:Label ID="qAnsLabel" runat="server" Text='<%# Bind("qAns") %>' />
-                <br />
-                qScores:
-                <asp:Label ID="qScoresLabel" runat="server" Text='<%# Bind("qScores") %>' />
-                <br />
-                score1:
-                <asp:Label ID="score1Label" runat="server" Text='<%# Bind("score1") %>' />
-                <br />
-                score2:
-                <asp:Label ID="score2Label" runat="server" Text='<%# Bind("score2") %>' />
-                <br />
-                marker:
-                <asp:Label ID="markerLabel" runat="server" Text='<%# Bind("marker") %>' />
-                <br />
-                SheetQs:
-                <asp:Label ID="SheetQsLabel" runat="server" Text='<%# Bind("SheetQs") %>' />
-                <br />
-                Assignment:
-                <asp:Label ID="AssignmentLabel" runat="server" Text='<%# Bind("Assignment") %>' />
-                <br />
-
-            </ItemTemplate>
-        </asp:FormView>
+        
         <br />
     </form>
 </body>

@@ -161,5 +161,18 @@ namespace onlineExam.Models
         public bool open { get; set; }
         public ICollection<Assignment> Assignments { get; set; }
     }
+    public class SheetForExportDTO
+    {
+        public int ExamId { get; set; }
+        public string ExamName { get; set; }
+        public int SheetId { get; set; }
+        public string StuId { get; set; }
+        public string StuName { get; set; }
+        public string StuClass { get; set; }
+        public int score1 { get; set; }
+        public int score2 { get; set; }
+        public int scoreSum { get; set; }
+        public string marker { get; set; }
+    }
 
 }

@@ -77,6 +77,20 @@ namespace onlineExam.BLL
         {
             return examRepository.GetExams().Where(x => x.open).ToList();
         }
+        public IEnumerable<SheetForExportDTO> GetSheetExportByExam(int exId, string sId, string sName, int status, int sheetId, string classId)
+        {
+            return GetAssignmentsByExam(exId, sId, sName, status, sheetId, classId).Select(x => new SheetForExportDTO {
+                ExamId = x.Exam.ExamId,
+                ExamName = x.Exam.name,
+                SheetId = x.Sheet.SheetId,
+                StuClass = x.Student.classId,
+                StuId = x.Student.StudentId,
+                StuName = x.Student.name,
+                 score1 =x.Sheet.score1,
+                score2=x.Sheet.score2,
+                scoreSum=x.Sheet.score1+x.Sheet.score2,
+                marker=x.Sheet.marker});
+        }
         public IEnumerable<Assignment> GetAssignmentsByExam(int exId, string sId, string sName, int status, int sheetId,string classId)
         {
             var query = examRepository.GetExams().SingleOrDefault(x => x.ExamId == exId);

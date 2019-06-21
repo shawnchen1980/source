@@ -268,7 +268,7 @@
                     <asp:Button ID="Button8" runat="server" OnClick="Button8_Click" Text="查询" />
                     <asp:Button ID="Button10" runat="server" Text="刷新" OnClick="Button10_Click" />
                     <asp:Label ID="Label2" runat="server" Text=""></asp:Label>
-                    <asp:GridView ID="GridView2" runat="server" AutoGenerateColumns="False" DataSourceID="ObjectDataSource8" >
+                    <asp:GridView ID="GridView2" runat="server" AutoGenerateColumns="False" DataSourceID="ObjectDataSource8" OnRowCommand="GridView2_RowCommand" >
                         <Columns>
                             <asp:BoundField DataField="AssignmentId" HeaderText="任务编号" SortExpression="AssignmentId" />
                             <asp:BoundField DataField="Student.StudentId" HeaderText="学号" SortExpression="Student" />
@@ -293,6 +293,11 @@
 
                             </asp:TemplateField>
                             <asp:BoundField DataField="Student.classId" HeaderText="班级" SortExpression="Student" />
+                            <asp:TemplateField HeaderText="操作">
+                                <ItemTemplate>
+                                    <asp:LinkButton ID="LinkButton1" runat="server" CommandName="ToUnSubmitted" CommandArgument='<%#Eval("AssignmentId") %>'>回到未提交状态</asp:LinkButton>
+                                </ItemTemplate>
+                            </asp:TemplateField>
                         </Columns>
                     </asp:GridView>
                 </asp:View>
