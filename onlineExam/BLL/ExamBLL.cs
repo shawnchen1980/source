@@ -86,10 +86,36 @@ namespace onlineExam.BLL
                 StuClass = x.Student.classId,
                 StuId = x.Student.StudentId,
                 StuName = x.Student.name,
-                 score1 =x.Sheet.score1,
-                score2=x.Sheet.score2,
-                scoreSum=x.Sheet.score1+x.Sheet.score2,
+                score1 = Utilities.GradeHelper.CalScoreRange(x.Sheet.answers, x.Sheet.qAns, x.Sheet.qScores, 0, 20),
+                score3 = Utilities.GradeHelper.CalScoreRange(x.Sheet.answers, x.Sheet.qAns, x.Sheet.qScores, 20, 10),
+                score4 = Utilities.GradeHelper.CalScoreRange(x.Sheet.answers, x.Sheet.qAns, x.Sheet.qScores, 30, 15),
+                score2 = x.Sheet.score2,
+                scoreSum=Utilities.GradeHelper.CalScore(x.Sheet.answers,x.Sheet.qAns,x.Sheet.qScores)+x.Sheet.score2,
+                answer1=x.Sheet.answer1,
+                answer2=x.Sheet.answer2,
+                answer3=x.Sheet.answer3,
                 marker=x.Sheet.marker});
+        }
+        public IEnumerable<SheetForExportDTO> GetSheetExportByExamAndReviewer(int exId, string reviewer)
+        {
+            return GetAssignmentsByExamAndReviewer(exId, reviewer).Select(x => new SheetForExportDTO
+            {
+                ExamId = x.Exam.ExamId,
+                ExamName = x.Exam.name,
+                SheetId = x.Sheet.SheetId,
+                StuClass = x.Student.classId,
+                StuId = x.Student.StudentId,
+                StuName = x.Student.name,
+                score1 = Utilities.GradeHelper.CalScoreRange(x.Sheet.answers, x.Sheet.qAns, x.Sheet.qScores, 0, 20),
+                score3 = Utilities.GradeHelper.CalScoreRange(x.Sheet.answers, x.Sheet.qAns, x.Sheet.qScores, 20, 10),
+                score4 = Utilities.GradeHelper.CalScoreRange(x.Sheet.answers, x.Sheet.qAns, x.Sheet.qScores, 30, 15),
+                score2 = x.Sheet.score2,
+                scoreSum = Utilities.GradeHelper.CalScore(x.Sheet.answers, x.Sheet.qAns, x.Sheet.qScores) + x.Sheet.score2,
+                answer1 = x.Sheet.answer1,
+                answer2 = x.Sheet.answer2,
+                answer3 = x.Sheet.answer3,
+                marker = x.Sheet.marker
+            });
         }
         public IEnumerable<Assignment> GetAssignmentsByExam(int exId, string sId, string sName, int status, int sheetId,string classId)
         {
@@ -129,7 +155,17 @@ namespace onlineExam.BLL
             }
         }
 
-
+        public IEnumerable<Assignment> GetAssignmentsByExamAndReviewer(int exId, string reviewer)
+        {
+            var query = examRepository.GetExams().SingleOrDefault(x => x.ExamId == exId );
+            if (query == null) return null;
+            IEnumerable<Assignment> res = query.Assignments;
+            if (!string.IsNullOrEmpty(reviewer))
+            {
+                res = res.Where(x => x.Sheet.marker== reviewer);
+            }
+            return res;
+        }
         public void InsertExam(Exam qt)
         {
             examRepository.InsertExam(qt);

@@ -135,10 +135,15 @@ namespace onlineExam.Pages
                     worksheet.Cells[1, 4].Value = "学号";
                     worksheet.Cells[1, 5].Value = "姓名";
                     worksheet.Cells[1, 6].Value = "班级";
-                    worksheet.Cells[1, 7].Value = "客观题得分";
-                    worksheet.Cells[1, 8].Value = "主观题得分";
-                    worksheet.Cells[1, 9].Value = "总分分";
-                    worksheet.Cells[1, 10].Value = "阅卷人";
+                    worksheet.Cells[1, 7].Value = "单选题得分";
+                    worksheet.Cells[1, 8].Value = "多选题得分";
+                    worksheet.Cells[1, 9].Value = "是非题得分";
+                    worksheet.Cells[1, 10].Value = "简答题得分";
+                    worksheet.Cells[1, 11].Value = "总分";
+                    worksheet.Cells[1, 12].Value = "阅卷人";
+                    worksheet.Cells[1, 13].Value = "第一小题回答";
+                    worksheet.Cells[1, 14].Value = "第二小题回答";
+                    worksheet.Cells[1, 15].Value = "第三小题回答";
                 }
                 //ExamId	ExamName	SheetId	StuId	StuName	StuClass	score1	score2	scoreSum	marker
 
@@ -233,6 +238,44 @@ namespace onlineExam.Pages
                 //return xlFile.FullName;
             }
         }
+        public void RunSample2()
+        {
+            using (var package = new ExcelPackage())
+            {
+                // Add a new worksheet to the empty workbook
+                ExcelWorksheet worksheet = package.Workbook.Worksheets.Add("Grades");
+                using (var data = new ExamBLL())
+                {
+                    int exId = Convert.ToInt32(DropDownList2.SelectedValue);
+                    string reviewer = ViewState["Reviewer"] as string;
+
+
+                    worksheet.Cells["A2"].LoadFromCollection(data.GetSheetExportByExamAndReviewer(exId, reviewer), false, TableStyles.Medium9);
+                    //Add the headers
+                    worksheet.Cells[1, 1].Value = "考试编号";
+                    worksheet.Cells[1, 2].Value = "考试名称";
+                    worksheet.Cells[1, 3].Value = "试卷编号";
+                    worksheet.Cells[1, 4].Value = "学号";
+                    worksheet.Cells[1, 5].Value = "姓名";
+                    worksheet.Cells[1, 6].Value = "班级";
+                    worksheet.Cells[1, 7].Value = "单选题得分";
+                    worksheet.Cells[1, 8].Value = "多选题得分";
+                    worksheet.Cells[1, 9].Value = "是非题得分";
+                    worksheet.Cells[1, 10].Value = "简答题得分";
+                    worksheet.Cells[1, 11].Value = "总分";
+                    worksheet.Cells[1, 12].Value = "阅卷人";
+                    worksheet.Cells[1, 13].Value = "第一小题回答";
+                    worksheet.Cells[1, 14].Value = "第二小题回答";
+                    worksheet.Cells[1, 15].Value = "第三小题回答";
+                }
+                
+                package.SaveAs(Response.OutputStream);
+                Response.ContentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+                Response.AddHeader("content-disposition", "attachment;  filename=download.xlsx");
+
+                //return xlFile.FullName;
+            }
+        }
         protected void Button11_Click(object sender, EventArgs e)
         {
             RunSample1();
@@ -242,6 +285,23 @@ namespace onlineExam.Pages
         {
             ViewState["Reviewer"] = TextBox4.Text;
             MultiView1.ActiveViewIndex = 0;
+        }
+
+        protected void FormView1_ItemCommand(object sender, FormViewCommandEventArgs e)
+        {
+            if (e.CommandName == "NextEntry")
+            {
+                GridView2.SelectedIndex++;
+            }
+            else if (e.CommandName == "PrevEntry")
+            {
+                GridView2.SelectedIndex--;
+            }
+        }
+
+        protected void Button2_Click(object sender, EventArgs e)
+        {
+            RunSample2();
         }
     }
 }

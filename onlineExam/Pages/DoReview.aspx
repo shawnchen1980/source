@@ -86,6 +86,31 @@
 	position:relative;
 	top:1px;
 }
+.myButton1 {
+	-moz-box-shadow: 0px 0px 0px 2px #9fb4f2;
+	-webkit-box-shadow: 0px 0px 0px 2px #9fb4f2;
+	box-shadow: 0px 0px 0px 2px #9fb4f2;
+	background-color:#7892c2;
+	-moz-border-radius:10px;
+	-webkit-border-radius:10px;
+	border-radius:10px;
+	border:1px solid #4e6096;
+	display:inline-block;
+	cursor:pointer;
+	color:#ffffff;
+	font-family:Arial;
+	font-size:19px;
+	padding:12px 37px;
+	text-decoration:none;
+	text-shadow:0px 1px 0px #283966;
+}
+.myButton1:hover {
+	background-color:#476e9e;
+}
+.myButton1:active {
+	position:relative;
+	top:1px;
+}
     </style>
     <title></title>
 </head>
@@ -108,8 +133,10 @@
                             <asp:ControlParameter ControlID="GridView2" Name="assId" PropertyName="SelectedValue" Type="Int32" />
                         </SelectParameters>
                     </asp:ObjectDataSource>
+             <div style="background-color :sandybrown">第一步：点顶部阅卷评分；第二步：选择考试场次，输入班级代码，点“查询试卷列表”；第三步：点击左侧试卷项，在右侧打分，在下方点保存按钮保存评分；第四步：所有试卷评分结束后点导出下载试卷按钮</div>
+
             <div class="header5v">
-            <asp:Menu ID="Menu1" runat="server" BackColor="#B5C7DE" DynamicHorizontalOffset="2" Font-Names="Verdana" Font-Size="0.8em" ForeColor="#284E98" OnMenuItemClick="Menu1_MenuItemClick" Orientation="Horizontal" StaticSubMenuIndent="10px">
+            <asp:Menu ID="Menu1" runat="server" BackColor="#B5C7DE" RenderingMode="List" DynamicHorizontalOffset="2" Font-Names="Verdana" Font-Size="0.8em" ForeColor="#284E98" OnMenuItemClick="Menu1_MenuItemClick" Orientation="Horizontal" StaticSubMenuIndent="10px">
                 <DynamicHoverStyle BackColor="#284E98" ForeColor="White" />
                 <DynamicMenuItemStyle HorizontalPadding="5px" VerticalPadding="2px" />
                 <DynamicMenuStyle BackColor="#B5C7DE" />
@@ -122,6 +149,7 @@
                 <StaticMenuItemStyle HorizontalPadding="5px" VerticalPadding="2px" />
                 <StaticSelectedStyle BackColor="#507CD1" />
             </asp:Menu>
+                
             </div>
             <div class="header">
                     <asp:DropDownList ID="DropDownList2" runat="server" DataSourceID="ObjectDataSource7" DataTextField="name" DataValueField="ExamId" AppendDataBoundItems="True" OnDataBound="DropDownList2_DataBound">
@@ -140,6 +168,7 @@
                     <asp:Button ID="Button8" runat="server" OnClick="Button8_Click" Text="查询试卷列表" />
                     <asp:Button ID="Button10" runat="server" Text="刷新考试信息" OnClick="Button10_Click" />
             <asp:Button ID="Button11" runat="server" OnClick="Button11_Click" Text="导出下载试卷" />
+            <asp:Button ID="Button2" runat="server"  Text="导出本人批阅的试卷" OnClick="Button2_Click" />
             <br />
                     <asp:Label ID="Label2" runat="server" Text=""></asp:Label>
             </div>            
@@ -151,7 +180,7 @@
                     <asp:GridView ID="GridView2" runat="server" AutoGenerateColumns="False" DataSourceID="ObjectDataSource8" CellPadding="4" DataKeyNames="AssignmentId" ForeColor="#333333" GridLines="None" OnSelectedIndexChanged="GridView2_SelectedIndexChanged" >
                         <AlternatingRowStyle BackColor="White" ForeColor="#284775" />
                         <Columns>
-                            <asp:TemplateField  HeaderText="学号姓名">
+                            <asp:TemplateField  HeaderText="试卷列表">
                                 <ItemTemplate>
                                     <asp:LinkButton ID="LinkButton1" runat="server" CausesValidation="False" CommandName="Select" Text='<%# Convert.ToString(Eval("Student.StudentId"))+" "+Convert.ToString(Eval("Student.name")) %>'></asp:LinkButton>
                                 </ItemTemplate>
@@ -177,7 +206,7 @@
                     </asp:GridView>
                             </div>
                         <div class="flexRight">
-                        <asp:FormView ID="FormView1" runat="server" DataSourceID="ObjectDataSource1" DefaultMode="Edit" CssClass="formView">
+                        <asp:FormView ID="FormView1" runat="server" DataSourceID="ObjectDataSource1" DefaultMode="Edit" CssClass="formView" OnItemCommand="FormView1_ItemCommand">
             <EditItemTemplate>
                 
                 <asp:TextBox ID="SheetIdTextBox" Visible="false" runat="server" Text='<%# Bind("SheetId") %>'  />
@@ -234,7 +263,8 @@
               </div>
                 
                 <asp:LinkButton ID="UpdateButton" runat="server" CausesValidation="True" CommandName="Update" CssClass="myButton" Text="保存" />
-                
+                <asp:LinkButton ID="LinkButton3" runat="server" CssClass="myButton1" CommandName="PrevEntry">上一条</asp:LinkButton>
+                <asp:LinkButton ID="LinkButton2" runat="server" CssClass="myButton1" CommandName="NextEntry">下一条</asp:LinkButton>
             </EditItemTemplate>
            
            
@@ -275,7 +305,7 @@
                 <asp:View ID="View3" runat="server">
                     <div class="loginCover">
                         <div class="centerBlock">
-                            <h1>阅卷入口</h1>
+                            <h1>阅卷入口,请输入阅卷人姓名和阅卷密码</h1>
                         <asp:TextBox ID="TextBox4" placeholder="阅卷人" runat="server"></asp:TextBox>
                         <asp:RequiredFieldValidator ID="RequiredFieldValidator1" runat="server" ControlToValidate="TextBox4" ErrorMessage="*" ForeColor="Red"></asp:RequiredFieldValidator>
                         <asp:TextBox ID="TextBox5" placeholder="密码" runat="server" TextMode="Password"></asp:TextBox>
@@ -289,7 +319,7 @@
             </asp:MultiView>
         </div>
         <br />
-        <asp:Label ID="Label3" runat="server" Text=""></asp:Label>
+        <asp:Label ID="Label3" runat="server" Visible="false" Text=""></asp:Label>
           <br />
         
         <br />

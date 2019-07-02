@@ -9,8 +9,8 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace onlineExam.Models
 {
-    //public class DBInitializer : CreateDatabaseIfNotExists<OnlineExamContext>
-     public class DBInitializer : DropCreateDatabaseIfModelChanges<OnlineExamContext>
+    public class DBInitializer : CreateDatabaseIfNotExists<OnlineExamContext>
+   //  public class DBInitializer : DropCreateDatabaseIfModelChanges<OnlineExamContext>
     {
         protected override void Seed(OnlineExamContext context)
         {
@@ -169,10 +169,16 @@ namespace onlineExam.Models
         public string StuId { get; set; }
         public string StuName { get; set; }
         public string StuClass { get; set; }
-        public int score1 { get; set; }
-        public int score2 { get; set; }
-        public int scoreSum { get; set; }
-        public string marker { get; set; }
+        public int score1 { get; set; }//单选题得分
+        public int score3 { get; set; }//多选题得分
+        public int score4 { get; set; }//是非题得分
+        public int score2 { get; set; }//简答题得分
+        public int scoreSum { get; set; }//总分
+        public string marker { get; set; }//阅卷人
+        public string answer1 { get; set; }//第一小题回答
+        public string answer2 { get; set; }//第二小题回答
+        public string answer3 { get; set; }//第三小题回答
+       
     }
 
 }
