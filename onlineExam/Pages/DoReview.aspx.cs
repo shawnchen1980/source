@@ -138,7 +138,7 @@ namespace onlineExam.Pages
                     worksheet.Cells[1, 7].Value = "单选题得分";
                     worksheet.Cells[1, 8].Value = "多选题得分";
                     worksheet.Cells[1, 9].Value = "是非题得分";
-                    worksheet.Cells[1, 10].Value = "简答题得分";
+                    worksheet.Cells[1, 10].Value = "论述题得分";
                     worksheet.Cells[1, 11].Value = "总分";
                     worksheet.Cells[1, 12].Value = "阅卷人";
                     worksheet.Cells[1, 13].Value = "第一小题回答";
@@ -244,13 +244,13 @@ namespace onlineExam.Pages
             {
                 // Add a new worksheet to the empty workbook
                 ExcelWorksheet worksheet = package.Workbook.Worksheets.Add("Grades");
-                using (var data = new ExamBLL())
+                using (var data = new AssignmentBLL())
                 {
                     int exId = Convert.ToInt32(DropDownList2.SelectedValue);
                     string reviewer = ViewState["Reviewer"] as string;
 
 
-                    worksheet.Cells["A2"].LoadFromCollection(data.GetSheetExportByExamAndReviewer(exId, reviewer), false, TableStyles.Medium9);
+                    worksheet.Cells["A2"].LoadFromCollection(data.GetSheetExportByReviewerAndExam(reviewer,exId,CheckBox1.Checked), false, TableStyles.Medium9);
                     //Add the headers
                     worksheet.Cells[1, 1].Value = "考试编号";
                     worksheet.Cells[1, 2].Value = "考试名称";
@@ -261,7 +261,7 @@ namespace onlineExam.Pages
                     worksheet.Cells[1, 7].Value = "单选题得分";
                     worksheet.Cells[1, 8].Value = "多选题得分";
                     worksheet.Cells[1, 9].Value = "是非题得分";
-                    worksheet.Cells[1, 10].Value = "简答题得分";
+                    worksheet.Cells[1, 10].Value = "论述题得分";
                     worksheet.Cells[1, 11].Value = "总分";
                     worksheet.Cells[1, 12].Value = "阅卷人";
                     worksheet.Cells[1, 13].Value = "第一小题回答";

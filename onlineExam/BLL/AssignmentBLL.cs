@@ -26,6 +26,58 @@ namespace onlineExam.BLL
             return res;
             //return null;
         }
+        public IEnumerable<SheetForExportDTO> GetSheetExportByReviewer(string reviewer)
+        {
+            return GetAssignmentsByReviewer(reviewer).Select(x => new SheetForExportDTO
+            {
+                ExamId = x.Exam.ExamId,
+                ExamName = x.Exam.name,
+                SheetId = x.Sheet.SheetId,
+                StuClass = x.Student.classId,
+                StuId = x.Student.StudentId,
+                StuName = x.Student.name,
+                score1 = Utilities.GradeHelper.CalScoreRange(x.Sheet.answers, x.Sheet.qAns, x.Sheet.qScores, 0, 20),
+                score3 = Utilities.GradeHelper.CalScoreRange(x.Sheet.answers, x.Sheet.qAns, x.Sheet.qScores, 20, 10),
+                score4 = Utilities.GradeHelper.CalScoreRange(x.Sheet.answers, x.Sheet.qAns, x.Sheet.qScores, 30, 15),
+                score2 = x.Sheet.score2,
+                scoreSum = Utilities.GradeHelper.CalScore(x.Sheet.answers, x.Sheet.qAns, x.Sheet.qScores) + x.Sheet.score2,
+                answer1 = x.Sheet.answer1,
+                answer2 = x.Sheet.answer2,
+                answer3 = x.Sheet.answer3,
+                marker = x.Sheet.marker
+            });
+        }
+        public IEnumerable<Assignment> GetAssignmentsByReviewer(string reviewer)
+        {
+            var res = assignmentRepository.GetAssignments().Where(x => x.Sheet.marker == reviewer );
+            return res;
+        }
+        public IEnumerable<SheetForExportDTO> GetSheetExportByReviewerAndExam(string reviewer,int ExId, bool withLaterExam = false)
+        {
+            return GetAssignmentsByReviewerAndExam(reviewer,ExId,withLaterExam).Select(x => new SheetForExportDTO
+            {
+                ExamId = x.Exam.ExamId,
+                ExamName = x.Exam.name,
+                SheetId = x.Sheet.SheetId,
+                StuClass = x.Student.classId,
+                StuId = x.Student.StudentId,
+                StuName = x.Student.name,
+                score1 = Utilities.GradeHelper.CalScoreRange(x.Sheet.answers, x.Sheet.qAns, x.Sheet.qScores, 0, 20),
+                score3 = Utilities.GradeHelper.CalScoreRange(x.Sheet.answers, x.Sheet.qAns, x.Sheet.qScores, 20, 10),
+                score4 = Utilities.GradeHelper.CalScoreRange(x.Sheet.answers, x.Sheet.qAns, x.Sheet.qScores, 30, 15),
+                score2 = x.Sheet.score2,
+                scoreSum = Utilities.GradeHelper.CalScore(x.Sheet.answers, x.Sheet.qAns, x.Sheet.qScores) + x.Sheet.score2,
+                answer1 = x.Sheet.answer1,
+                answer2 = x.Sheet.answer2,
+                answer3 = x.Sheet.answer3,
+                marker = x.Sheet.marker
+            });
+        }
+        public IEnumerable<Assignment> GetAssignmentsByReviewerAndExam(string reviewer,int ExId,bool withLaterExam=false)
+        {
+            var res = assignmentRepository.GetAssignments().Where(x => x.Sheet.marker == reviewer && (x.Exam.ExamId==ExId || (x.Exam.ExamId>= ExId && withLaterExam)));
+            return res;
+        }
         public Assignment GetAssignment(int id)
         {
             return assignmentRepository.GetAssignments().FirstOrDefault(x => x.AssignmentId == id);

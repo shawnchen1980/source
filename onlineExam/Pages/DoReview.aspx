@@ -169,6 +169,9 @@
                     <asp:Button ID="Button10" runat="server" Text="刷新考试信息" OnClick="Button10_Click" />
             <asp:Button ID="Button11" runat="server" OnClick="Button11_Click" Text="导出下载试卷" />
             <asp:Button ID="Button2" runat="server"  Text="导出本人批阅的试卷" OnClick="Button2_Click" />
+             
+                    <asp:CheckBox ID="CheckBox1" runat="server" Text="导出时合并后续试卷" />
+             
             <br />
                     <asp:Label ID="Label2" runat="server" Text=""></asp:Label>
             </div>            

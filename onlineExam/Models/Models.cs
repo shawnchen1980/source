@@ -156,6 +156,8 @@ namespace onlineExam.Models
     }
     public class Exam
     {
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int ExamId { get; set; }
         public string name { get; set; }
         public bool open { get; set; }

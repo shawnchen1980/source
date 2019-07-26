@@ -14,6 +14,7 @@ namespace onlineExam.BLL
     {
         
         private IExamRepository examRepository;
+        
 
         #region IDisposable Support
         private bool disposedValue = false; // 要检测冗余调用
@@ -71,7 +72,7 @@ namespace onlineExam.BLL
         }
         public IEnumerable<Exam> GetAllExams()
         {
-            return examRepository.GetExams().ToList();
+            return examRepository.GetExams().OrderBy(x=>x.ExamId).ToList();
         }
         public IEnumerable<Exam> GetOpenedExams()
         {
@@ -166,6 +167,7 @@ namespace onlineExam.BLL
             }
             return res;
         }
+
         public void InsertExam(Exam qt)
         {
             examRepository.InsertExam(qt);
