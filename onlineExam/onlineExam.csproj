@@ -139,6 +139,7 @@
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Scripts\jquery-3.3.1.intellisense.js" />
     <Content Include="Install\deployManual.txt" />
+    <Content Include="Pages\DoCheckAnswers.aspx" />
     <Content Include="Pages\DoExam.aspx" />
     <Content Include="Pages\DoReview.aspx" />
     <Content Include="Pages\submitError.html" />
@@ -224,6 +225,13 @@
     <Compile Include="Models\Models.cs" />
     <Compile Include="Models\OnlineExamContext.cs" />
     <Compile Include="Models\Sb.cs" />
+    <Compile Include="Pages\DoCheckAnswers.aspx.cs">
+      <DependentUpon>DoCheckAnswers.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Pages\DoCheckAnswers.aspx.designer.cs">
+      <DependentUpon>DoCheckAnswers.aspx</DependentUpon>
+    </Compile>
     <Compile Include="Pages\DoExam.aspx.cs">
       <DependentUpon>DoExam.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>

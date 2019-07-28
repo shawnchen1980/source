@@ -17,7 +17,7 @@
                 <Items>
                     <asp:MenuItem Text="试题导入" Value="1"></asp:MenuItem>
                     <asp:MenuItem Text="创建试卷模板" Value="2"></asp:MenuItem>
-                    <asp:MenuItem Text="阅卷评分" Value="3"></asp:MenuItem>
+                    <asp:MenuItem Text="查卷系统" Value="3"></asp:MenuItem>
                     <asp:MenuItem Text="创建考试名单" Value="4"></asp:MenuItem>
                     <asp:MenuItem Text="分配任务" Value="5"></asp:MenuItem>
                     <asp:MenuItem Text="考试管理" Value="6"></asp:MenuItem>
@@ -104,69 +104,7 @@
 
                 </asp:View>
                 <asp:View ID="View3" runat="server">
-                    <asp:ObjectDataSource ID="ObjectDataSource2" runat="server" SelectMethod="GetSheetQs" TypeName="onlineExam.DAL.SheetQRepository" UpdateMethod="UpdateSheetQ" ConflictDetection="CompareAllValues" DataObjectTypeName="onlineExam.Models.SheetQ" OldValuesParameterFormatString="orig{0}">
-                <UpdateParameters>
-                    <asp:Parameter Name="yqsbb" Type="Object" />
-                    <asp:Parameter Name="origYqsbb" Type="Object" />
-                </UpdateParameters>
-            </asp:ObjectDataSource>
-
-            <br />
-            <asp:FormView ID="FormView2" runat="server" AllowPaging="True" DataSourceID="ObjectDataSource2" DefaultMode="Edit" OnDataBound="FormView2_DataBound" OnItemUpdating="FormView2_ItemUpdating">
-                <EditItemTemplate>
-                    SheetQId:
-                    <asp:TextBox ID="SheetQIdTextBox" runat="server" Text='<%# Bind("SheetQId") %>' />
-                    <br />
-                   qid:
-                    <asp:Label ID="qidLabel2" runat="server" Text='<%# Eval("QTemplate.qid") %>' />
-                    <br />
-                    qtext1:
-                    <asp:Label ID="qtext1Label2" runat="server" Text='<%# Eval("QTemplate.qtext1") %>' />
-                    <br />
-                    qtext2:
-                    <asp:Label ID="qtext2Label2" runat="server" Text='<%# Eval("QTemplate.qtext2") %>' />
-                    <br />
-                    <asp:Label ID="Label12" runat="server" Visible="false" Text='<%# Eval("QTemplate.qType") %>' />
-                    
-                    <br />
-                    <asp:Panel ID="Panel12" runat="server">
-                    <asp:RadioButtonList ID="RadioButtonList12" runat="server" OnDataBinding="RadioButtonList1_DataBinding" >
-                        
-                    </asp:RadioButtonList>
-                    </asp:Panel>
-                    <asp:Panel ID="Panel22" runat="server">
-                        <asp:CheckBoxList ID="CheckBoxList12" runat="server"></asp:CheckBoxList>
-                    </asp:Panel>
-                    <asp:Panel ID="Panel42" runat="server">
-                        <asp:TextBox ID="TextBox12" runat="server" Text='<%# Bind("answer") %>' TextMode="MultiLine" />
-                        <asp:TextBox ID="TextBox22" runat="server" Text='<%# Bind("answer2") %>' TextMode="MultiLine"/>
-                        <asp:TextBox ID="TextBox32" runat="server" Text='<%# Bind("answer3") %>' TextMode="MultiLine"/>
-                    </asp:Panel>
-                    
-                    qOrder:
-                    <asp:TextBox ID="qOrderTextBox" runat="server" Text='<%# Bind("qOrder") %>' />
-                    <br />
-                    optionOffset:
-                    <asp:TextBox ID="optionOffsetTextBox" runat="server" Text='<%# Bind("optionOffset") %>' />
-                    <br />
-                    correctAnswer:
-                    <asp:TextBox ID="correctAnswerTextBox" runat="server" Text='<%# Bind("correctAnswer") %>' />
-                    <br />
-                    answer:
-                    <asp:TextBox ID="answerTextBox" runat="server" Text='<%# Bind("answer") %>' />
-                    <br />
-                    answer2:
-                    <asp:TextBox ID="answer2TextBox" runat="server" Text='<%# Bind("answer2") %>' />
-                    <br />
-                    answer3:
-                    <asp:TextBox ID="answer3TextBox" runat="server" Text='<%# Bind("answer3") %>' />
-                    <br />
-                                        <br />
-                    <asp:LinkButton ID="UpdateButton" runat="server" CausesValidation="True" CommandName="Update" Text="更新" />
-                    &nbsp;<asp:LinkButton ID="UpdateCancelButton" runat="server" CausesValidation="False" CommandName="Cancel" Text="取消" />
-                </EditItemTemplate>
-                
-            </asp:FormView>
+                    <asp:LinkButton ID="LinkButton2" OnClick="LinkButton2_Click" runat="server">转向查卷系统</asp:LinkButton>
                 </asp:View>
                 <asp:View ID="View4" runat="server">
                     <div class="custom-file">

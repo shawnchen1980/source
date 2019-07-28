@@ -26,6 +26,12 @@ namespace onlineExam.BLL
             return res;
             //return null;
         }
+        public IEnumerable<Assignment> GetAssignmentsForCheckAnswers(string id, string name)
+        {
+            var res = assignmentRepository.GetAssignments().Where(x => x.Student.StudentId == id && x.Student.name == name ).ToList();
+            return res;
+            //return null;
+        }
         public IEnumerable<SheetForExportDTO> GetSheetExportByReviewer(string reviewer)
         {
             return GetAssignmentsByReviewer(reviewer).Select(x => new SheetForExportDTO

@@ -278,117 +278,117 @@ namespace onlineExam.Pages
             }
         }
 
-        protected void FormView2_DataBound(object sender, EventArgs e)
-        {
-            SheetQ sheetQ = (SheetQ)FormView2.DataItem;
-            if (sheetQ == null) return;
-            QTemplate item = sheetQ.QTemplate;
-            //QTemplate item = ((SheetQ)FormView2.DataItem).QTemplate;
-            ArrayList arr = new ArrayList();
-            ArrayList list = new ArrayList();
-            list.Add(new { Code = item.op1, Name = "1" });
-            list.Add(new { Code = item.op2, Name = "2" });
-            list.Add(new { Code = item.op3, Name = "3" });
-            list.Add(new { Code = item.op4, Name = "4" });
-            list.Add(new { Code = item.op1, Name = "1" });
-            list.Add(new { Code = item.op2, Name = "2" });
-            list.Add(new { Code = item.op3, Name = "3" });
-            if (item.qType == 1 || item.qType == 2)
-            {
-                list = list.GetRange(sheetQ.optionOffset, 4);
-            }
-            else
-            {
-                list = list.GetRange(0, 4);
-            }
+        //protected void FormView2_DataBound(object sender, EventArgs e)
+        //{
+        //    SheetQ sheetQ = (SheetQ)FormView2.DataItem;
+        //    if (sheetQ == null) return;
+        //    QTemplate item = sheetQ.QTemplate;
+        //    //QTemplate item = ((SheetQ)FormView2.DataItem).QTemplate;
+        //    ArrayList arr = new ArrayList();
+        //    ArrayList list = new ArrayList();
+        //    list.Add(new { Code = item.op1, Name = "1" });
+        //    list.Add(new { Code = item.op2, Name = "2" });
+        //    list.Add(new { Code = item.op3, Name = "3" });
+        //    list.Add(new { Code = item.op4, Name = "4" });
+        //    list.Add(new { Code = item.op1, Name = "1" });
+        //    list.Add(new { Code = item.op2, Name = "2" });
+        //    list.Add(new { Code = item.op3, Name = "3" });
+        //    if (item.qType == 1 || item.qType == 2)
+        //    {
+        //        list = list.GetRange(sheetQ.optionOffset, 4);
+        //    }
+        //    else
+        //    {
+        //        list = list.GetRange(0, 4);
+        //    }
             
-            var panel1 = FormView2.FindControl("Panel12");
-            var panel2 = FormView2.FindControl("Panel22");
-            var panel4 = FormView2.FindControl("Panel42");
+        //    var panel1 = FormView2.FindControl("Panel12");
+        //    var panel2 = FormView2.FindControl("Panel22");
+        //    var panel4 = FormView2.FindControl("Panel42");
 
 
-            if (item.qType == 1 || item.qType == 3)
-            {
-                panel1.Visible = true;
-                panel2.Visible = false;
-                panel4.Visible = false;
-                RadioButtonList rbl = (RadioButtonList)FormView2.FindControl("RadioButtonList12");
-                if (item.qType == 3)
-                {
-                    list.RemoveRange(2, 2);
-                }
-                rbl.DataSource = list;
-                rbl.DataTextField = "Code";
-                rbl.DataValueField = "Name";
-                if (!String.IsNullOrEmpty(sheetQ.answer))
-                {
-                    rbl.SelectedValue = sheetQ.answer;
-                }
-                rbl.DataBind();
-            }
-            else if (item.qType == 2)
-            {
-                panel1.Visible = false;
-                panel2.Visible = true;
-                panel4.Visible = false;
-                CheckBoxList cbl = (CheckBoxList)FormView2.FindControl("CheckBoxList12");
-                cbl.DataSource = list;
-                cbl.DataTextField = "Code";
-                cbl.DataValueField = "Name";
+        //    if (item.qType == 1 || item.qType == 3)
+        //    {
+        //        panel1.Visible = true;
+        //        panel2.Visible = false;
+        //        panel4.Visible = false;
+        //        RadioButtonList rbl = (RadioButtonList)FormView2.FindControl("RadioButtonList12");
+        //        if (item.qType == 3)
+        //        {
+        //            list.RemoveRange(2, 2);
+        //        }
+        //        rbl.DataSource = list;
+        //        rbl.DataTextField = "Code";
+        //        rbl.DataValueField = "Name";
+        //        if (!String.IsNullOrEmpty(sheetQ.answer))
+        //        {
+        //            rbl.SelectedValue = sheetQ.answer;
+        //        }
+        //        rbl.DataBind();
+        //    }
+        //    else if (item.qType == 2)
+        //    {
+        //        panel1.Visible = false;
+        //        panel2.Visible = true;
+        //        panel4.Visible = false;
+        //        CheckBoxList cbl = (CheckBoxList)FormView2.FindControl("CheckBoxList12");
+        //        cbl.DataSource = list;
+        //        cbl.DataTextField = "Code";
+        //        cbl.DataValueField = "Name";
 
-                cbl.DataBind();
-                if (!String.IsNullOrEmpty(sheetQ.answer))
-                {
-                    char[] charSeparators = new char[] { ',' };
-                    string[] arr1 = sheetQ.answer.Split(charSeparators);
-                    cbl.Items.Cast<ListItem>().OrderBy(x => x.Value).Where(x => arr1.Contains(x.Value)).ToList().ForEach(x => x.Selected = true);
-                    //for (int j = 0; j < arr1.Length - 1; j++)
-                    //{
-                    //    cbl.Items.FindByValue(arr1[j]).Selected = true;
-                    //}
-                    //Console.Write(arr1);
-                }
-            }
-            else
-            {
-                panel1.Visible = false;
-                panel2.Visible = false;
-                panel4.Visible = true;
-            }
-        }
+        //        cbl.DataBind();
+        //        if (!String.IsNullOrEmpty(sheetQ.answer))
+        //        {
+        //            char[] charSeparators = new char[] { ',' };
+        //            string[] arr1 = sheetQ.answer.Split(charSeparators);
+        //            cbl.Items.Cast<ListItem>().OrderBy(x => x.Value).Where(x => arr1.Contains(x.Value)).ToList().ForEach(x => x.Selected = true);
+        //            //for (int j = 0; j < arr1.Length - 1; j++)
+        //            //{
+        //            //    cbl.Items.FindByValue(arr1[j]).Selected = true;
+        //            //}
+        //            //Console.Write(arr1);
+        //        }
+        //    }
+        //    else
+        //    {
+        //        panel1.Visible = false;
+        //        panel2.Visible = false;
+        //        panel4.Visible = true;
+        //    }
+        //}
 
-        protected void FormView2_ItemUpdating(object sender, FormViewUpdateEventArgs e)
-        {
-            //QTemplate item = (QTemplate)e.OldValues["QTemplate"];
-            Label lb = (Label)FormView2.FindControl("Label12");
-            if (lb.Text == "1" || lb.Text == "3")
-            {
-                RadioButtonList rbl = (RadioButtonList)FormView2.FindControl("RadioButtonList12");
-                if (!String.IsNullOrEmpty(rbl.SelectedValue))
-                {
-                    e.NewValues["answer"] = rbl.SelectedValue;
-                }
-            }
-            else if (lb.Text == "2")
-            {
-                CheckBoxList cbl = (CheckBoxList)FormView2.FindControl("CheckBoxList12");
-                string res = "";
-                res = string.Join(",", cbl.Items.Cast<ListItem>().OrderBy(x => x.Value).Where(x => x.Selected).Select(x => x.Value));
-                //for (int i = 0; i < cbl.Items.Count; i++)
-                //{
+        //protected void FormView2_ItemUpdating(object sender, FormViewUpdateEventArgs e)
+        //{
+        //    //QTemplate item = (QTemplate)e.OldValues["QTemplate"];
+        //    Label lb = (Label)FormView2.FindControl("Label12");
+        //    if (lb.Text == "1" || lb.Text == "3")
+        //    {
+        //        RadioButtonList rbl = (RadioButtonList)FormView2.FindControl("RadioButtonList12");
+        //        if (!String.IsNullOrEmpty(rbl.SelectedValue))
+        //        {
+        //            e.NewValues["answer"] = rbl.SelectedValue;
+        //        }
+        //    }
+        //    else if (lb.Text == "2")
+        //    {
+        //        CheckBoxList cbl = (CheckBoxList)FormView2.FindControl("CheckBoxList12");
+        //        string res = "";
+        //        res = string.Join(",", cbl.Items.Cast<ListItem>().OrderBy(x => x.Value).Where(x => x.Selected).Select(x => x.Value));
+        //        //for (int i = 0; i < cbl.Items.Count; i++)
+        //        //{
 
-                //    if (cbl.Items[i].Selected)
-                //    {
-                //        res += cbl.Items[i].Value + ",";
-                //    }
-                //}
-                if (!String.IsNullOrEmpty(res))
-                {
-                    e.NewValues["answer"] = res;
-                    //cbl.
-                }
-            }
-        }
+        //        //    if (cbl.Items[i].Selected)
+        //        //    {
+        //        //        res += cbl.Items[i].Value + ",";
+        //        //    }
+        //        //}
+        //        if (!String.IsNullOrEmpty(res))
+        //        {
+        //            e.NewValues["answer"] = res;
+        //            //cbl.
+        //        }
+        //    }
+        //}
 
         protected void Menu1_MenuItemClick(object sender, MenuEventArgs e)
         {
@@ -558,6 +558,10 @@ namespace onlineExam.Pages
                     item.SheetSchema = schemas[index];
                     //int qCount = schemas[index].SheetSchemaQs.Count();
                     var qts = schemas[index].SheetSchemaQs.OrderBy(x=>x.qOrder).ToArray();
+                    //试题随即顺序生成算法如下：
+                    //首先根据试题数量生成一定长度的随即序列，如0,1,2,3,...变为1,3,0,....
+                    //然后根据随即数值序列再生成随即试题序列，再由随即试题序列按照试题类别进行排序，保证单选在先，复选在后
+                    //从排序之后的试题序列中获得试题编号序列，答案序列，偏移量序列，分值序列，此时题目顺序仍是打乱的，但能保证先单选，后复选
                     int qCount = qts.Length;
                     var seqArr = Utilities.SeqGenerator.GenerateRandom(qCount);
                     var qSeqArr = seqArr.Select(x => qts[x]).OrderBy(x => x.QTemplate.qType);
@@ -789,6 +793,12 @@ namespace onlineExam.Pages
                 GridView2.DataBind();
             }
                     
+        }
+
+        protected void LinkButton2_Click(object sender, EventArgs e)
+        {
+            Session["checkScores"] = true;
+            Response.Redirect("/pages/docheckanswers");
         }
     }
 
